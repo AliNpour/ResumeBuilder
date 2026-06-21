@@ -1,7 +1,7 @@
 /* ── State ────────────────────────────────────────────────────────────── */
 const state = {
   apiKey:       localStorage.getItem('rb_api_key') || '',
-  resumeText:   '',
+  resumeText:   '', 
   profile:      null,
   jobs:         [],
   selectedJobs: [],
