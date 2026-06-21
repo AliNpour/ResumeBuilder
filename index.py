@@ -6,7 +6,10 @@ import tempfile
 from pathlib import Path
 from flask import Flask, render_template, request, jsonify, send_file
 
-ROOT = Path(__file__).parent.parent
+ROOT = Path(__file__).parent  # on Vercel, api/ is at repo root so siblings are here too
+# If templates/ is not found next to api/, check one level up (local dev layout)
+if not (ROOT / "templates").exists():
+    ROOT = ROOT.parent
 sys.path.insert(0, str(ROOT / "resume_agent"))
 
 app = Flask(

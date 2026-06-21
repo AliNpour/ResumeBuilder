@@ -69,7 +69,7 @@ def build_styles():
         textColor=colors.black, spaceBefore=6, spaceAfter=0)
     add("JobMeta",       fontName=BODY_FONT, fontSize=FONT_SMALL,
         textColor=colors.HexColor("#555555"), spaceAfter=2)
-    add("ResumeBullet",  fontName=BODY_FONT, fontSize=FONT_BODY,
+    add("Bullet",        fontName=BODY_FONT, fontSize=FONT_BODY,
         leading=13, leftIndent=12, spaceAfter=1)
     add("SkillText",     fontName=BODY_FONT, fontSize=FONT_BODY,
         leading=14, spaceAfter=4)
@@ -133,7 +133,7 @@ def build_pdf(data: dict, output_path: str):
                 meta += f"  |  {job['dates']}"
             story.append(Paragraph(meta, styles["JobMeta"]))
             for bullet in job.get("bullets", []):
-                story.append(Paragraph(f"• {bullet}", styles["ResumeBullet"]))
+                story.append(Paragraph(f"• {bullet}", styles["Bullet"]))
 
     # Education
     if data.get("education"):
@@ -156,6 +156,65 @@ def build_pdf(data: dict, output_path: str):
 
     doc.build(story)
     print(f"PDF saved: {output_path}")
+
+
+def build_pdf_bytes(data: dict) -> bytes:
+    """Generate PDF in memory and return as bytes (used by Vercel/web deployments)."""
+    import io
+    buffer = io.BytesIO()
+    doc = SimpleDocTemplate(
+        buffer,
+        pagesize=letter,
+        rightMargin=0.75 * inch,
+        leftMargin=0.75 * inch,
+        topMargin=0.6 * inch,
+        bottomMargin=0.6 * inch,
+    )
+    styles = build_styles()
+    story = []
+
+    story.append(Paragraph(data["name"], styles["ResumeName"]))
+    contact_parts = [p for p in [
+        data.get("email"), data.get("phone"),
+        data.get("location"), data.get("linkedin")
+    ] if p]
+    story.append(Paragraph("  |  ".join(contact_parts), styles["ResumeContact"]))
+    story.append(Spacer(1, 4))
+
+    if data.get("summary"):
+        story += section_header("Professional Summary", styles)
+        story.append(Paragraph(data["summary"], styles["SummaryText"]))
+
+    if data.get("skills"):
+        story += section_header("Core Skills", styles)
+        story.append(Paragraph(" • ".join(data["skills"]), styles["SkillText"]))
+
+    if data.get("experience"):
+        story += section_header("Experience", styles)
+        for job in data["experience"]:
+            story.append(Paragraph(job["title"], styles["JobTitle"]))
+            meta = job["company"] + (f"  |  {job['dates']}" if job.get("dates") else "")
+            story.append(Paragraph(meta, styles["JobMeta"]))
+            for bullet in job.get("bullets", []):
+                story.append(Paragraph(f"• {bullet}", styles["Bullet"]))
+
+    if data.get("education"):
+        story += section_header("Education", styles)
+        for edu in data["education"]:
+            line = edu["degree"] + (f"  |  {edu['dates']}" if edu.get("dates") else "")
+            story.append(Paragraph(line, styles["EduLine"]))
+            detail = "  |  ".join(p for p in [edu.get("school"), edu.get("details")] if p)
+            if detail:
+                story.append(Paragraph(detail, styles["EduDetail"]))
+
+    if data.get("certifications"):
+        story += section_header("Certifications", styles)
+        for cert in data["certifications"]:
+            story.append(Paragraph(f"• {cert}", styles["CertText"]))
+
+    doc.build(story)
+    buffer.seek(0)
+    return buffer.read()
 
 
 if __name__ == "__main__":
