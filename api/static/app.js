@@ -99,7 +99,7 @@ function initDropzone() {
 
 /* ── Step 1: Upload & Analyze ────────────────────────────────────────── */
 async function analyzeResume() {
-  if (!state.apiKey) { openApiModal(); showToast('Please set your Anthropic API key first', 'error'); return; }
+
 
   const location = $('#location').value.trim();
   const position = $('#position').value.trim();
