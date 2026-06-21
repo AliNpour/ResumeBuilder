@@ -1,0 +1,99 @@
+{
+  "name": "Ali Nasiripour",
+  "email": "ali.npour7@gmail.com",
+  "phone": "+1 514-577-4925",
+  "location": "Burnaby, BC",
+  "linkedin": "",
+  "summary": "Network Infrastructure Engineer with 5 years of experience designing, deploying, and managing enterprise network and server infrastructure across 50+ multi-site environments in the hospitality industry. Deep expertise in Cisco Meraki full-stack deployments (MX/MS/MR), Sophos firewall administration, and network segmentation across LAN/WAN environments. Proven track record in leading network modernization projects, Tier 3 escalation support, VMware/Hyper-V virtualization, and Windows Server ecosystem management. Thrives in fast-paced, event-driven environments requiring after-hours responsiveness and minimal-downtime operations.",
+  "skills": [
+    "Cisco Meraki (MX/MS/MR)",
+    "LAN/WAN/VLAN/VPN Design",
+    "Sophos Firewalls",
+    "VMware vSphere",
+    "Hyper-V",
+    "Windows Server",
+    "Active Directory / DNS / DHCP / GPO",
+    "Azure (VMs, VPN Gateway, Entra ID)",
+    "AWS (EC2, S3, VPC)",
+    "PowerShell Automation",
+    "Network Segmentation & Hardening",
+    "Firmware Lifecycle Management",
+    "Centralized Syslog",
+    "Scale Computing HC3",
+    "Routing & Switching",
+    "Veeam VBR / DR Orchestration",
+    "Aruba Wireless"
+  ],
+  "experience": [
+    {
+      "title": "Disaster Recovery / Backup Engineer",
+      "company": "Northland Properties — Vancouver, Canada",
+      "dates": "June 2024 – Present",
+      "bullets": [
+        "Engineer and administer Cisco Meraki full-stack infrastructure (MX security appliances, MS switches, MR access points) across 50+ hotel and resort properties, including firmware rollouts, network segmentation, and Meraki Dashboard-based monitoring.",
+        "Lead VLAN redesign and network segmentation projects during site refresh cycles, coordinating hardware staging, cutover scheduling, and on-site team support with minimal service disruption.",
+        "Administer Sophos firewall infrastructure including VPN policy management, traffic filtering, and security posture hardening across distributed multi-site environments.",
+        "Manage VMware vSphere, Hyper-V, and Scale Computing HC3 virtualization platforms hosting 200+ physical and virtual servers across on-premises and cloud environments.",
+        "Provision and manage Azure infrastructure including Virtual Machines, VPN Gateways, Blob Storage, and Entra ID integrations for hybrid identity and access management.",
+        "Design and maintain centralized syslog architecture aggregating logs from firewalls, switches, and servers to enhance visibility and accelerate incident response.",
+        "Coordinate firmware upgrades and infrastructure patching across production environments using structured maintenance windows to minimize operational disruption.",
+        "Provide Tier 3 network escalation support for complex routing, firewall, VPN, and authentication issues across all supported sites.",
+        "Develop SOPs and network documentation to ensure operational resilience and facilitate knowledge transfer across the infrastructure team."
+      ]
+    },
+    {
+      "title": "Network Analyst",
+      "company": "Northland Properties — Vancouver, Canada",
+      "dates": "June 2022 – June 2024",
+      "bullets": [
+        "Led full network modernization project at Grouse Mountain Resort, replacing end-of-life L2/L3 switches, Sophos firewalls, servers, and wireless infrastructure with current-generation equipment.",
+        "Deployed and configured Cisco Meraki wireless and switching infrastructure at multiple properties, including SSID configuration, traffic shaping, and guest network isolation via Meraki Dashboard.",
+        "Implemented RADIUS authentication to enhance access control and strengthen on-premises security posture across multi-site Windows Server environments.",
+        "Administered Active Directory, DNS, DHCP, and Group Policy across multi-site Windows Server environments, maintaining consistent security and configuration standards.",
+        "Managed Azure cloud instances including VM provisioning, VPN tunnel configuration, and resource monitoring for hosted workloads.",
+        "Automated repetitive operational tasks using PowerShell to improve team efficiency and reduce manual overhead.",
+        "Monitored and managed LAN/WAN, VPN, and firewall activity, reducing recurring incidents and improving mean time to resolution.",
+        "Provided Tier 3 escalation support for routing, VLAN, and connectivity issues across all supported resort and hotel properties."
+      ]
+    },
+    {
+      "title": "IT Network Administrator",
+      "company": "KamNic Inc. — Montreal, Canada",
+      "dates": "Feb 2021 – Feb 2022",
+      "bullets": [
+        "Supported Windows Server environments, network hardware, and firewall infrastructure for the organization.",
+        "Managed system patching, OS updates, and virtualization environments to maintain uptime and security compliance.",
+        "Maintained hybrid backup environments and contributed to disaster recovery readiness."
+      ]
+    },
+    {
+      "title": "Customer Support",
+      "company": "Rogers — Burnaby, Canada",
+      "dates": "Feb 2022 – Jun 2022",
+      "bullets": [
+        "Delivered technical support for internet, mobile, and TV services; diagnosed connectivity and device issues across iOS and Android platforms."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Diploma, Computer Systems",
+      "school": "Lester B. Pearson, Montreal, QC",
+      "dates": "2019 – 2021",
+      "details": ""
+    },
+    {
+      "degree": "Bachelor, Electronics",
+      "school": "Pipe Mill Science University, Iran",
+      "dates": "2016 – 2018",
+      "details": ""
+    }
+  ],
+  "certifications": [
+    "CCNA (2020)",
+    "Sophos Firewall Certified Administrator v20 (2024)",
+    "AWS Solutions Architect – Associate (2025)",
+    "AWS Cloud Practitioner (2024)",
+    "AI & n8n Automation (2025)"
+  ]
+}
