@@ -37,10 +37,25 @@ def claude_json(client, prompt: str, max_tokens: int = 2000):
         messages=[{"role": "user", "content": prompt}],
     )
     text = response.content[0].text.strip()
-    if text.startswith("```"):
-        text = text.split("```")[1]
-        if text.startswith("json"):
-            text = text[4:]
+
+    # Strip markdown code fences
+    if "```" in text:
+        parts = text.split("```")
+        for part in parts:
+            part = part.strip()
+            if part.startswith("json"):
+                part = part[4:].strip()
+            if part.startswith(("{", "[")):
+                text = part
+                break
+
+    # Extract first JSON object or array even if surrounded by prose
+    import re
+    if not text.startswith(("{", "[")):
+        m = re.search(r'(\{[\s\S]*\}|\[[\s\S]*\])', text)
+        if m:
+            text = m.group(1)
+
     return json.loads(text.strip())
 
 
@@ -108,16 +123,16 @@ def search_jobs_api():
 
     try:
         client = make_client()
-        # Keep prompt compact to stay within Render's 30s timeout
         skills_short = ", ".join((profile.get("top_skills") or [])[:5])
-        jobs = claude_json(client, f"""Generate 8 realistic job postings for this candidate. Return ONLY a JSON array, no other text.
+        jobs = claude_json(client, f"""Return ONLY a valid JSON array of exactly 5 job postings. No explanation, no markdown, start with [ end with ].
 
-Candidate: {profile.get("current_title","Engineer")}, skills: {skills_short}, exp: {profile.get("years_experience","5")} years
+Candidate: {profile.get("current_title","Engineer")}, skills: {skills_short}, {profile.get("years_experience","5")} yrs exp
 Role: {search_term} | Location: {location} | Salary: {salary or "open"}
 
-Each item: {{"title":"","company":"","location":"","job_url":"","description":"2 sentences max","salary_raw":"","is_remote":false,"site":"linkedin","score":8,"work_type":"Remote","salary_display":"","role_summary":"1 sentence","key_qualifications":["req1","req2","req3"]}}
+Each item must have these fields with SHORT values (keep description under 20 words, role_summary under 15 words):
+{{"title":"X","company":"X","location":"X","job_url":"","description":"X","salary_raw":"USD 90,000 - 120,000","is_remote":false,"site":"linkedin","score":8,"work_type":"Remote","salary_display":"USD 90k-120k","role_summary":"X","key_qualifications":["X","X","X"]}}
 
-Use real companies. Mix Remote/Hybrid/In-Office. Score 6-10. Sort by score desc.""", max_tokens=2000)
+Use real companies. Mix Remote/Hybrid/In-Office. Scores 6-10 desc.""", max_tokens=4000)
     except Exception as e:
         return jsonify({"error": f"Job search failed: {str(e)}"}), 500
 
