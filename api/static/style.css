@@ -48,9 +48,10 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(59,130,246,.08) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139,92,246,.07) 0%, transparent 55%),
-    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(20,184,166,.05) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(59,130,246,.22) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(139,92,246,.18) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 50% 90%, rgba(20,184,166,.12) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 35% at 60% 50%, rgba(59,130,246,.06) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -137,8 +138,8 @@ header {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(59,130,246,.06) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59,130,246,.06) 1px, transparent 1px);
+    linear-gradient(rgba(59,130,246,.13) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59,130,246,.13) 1px, transparent 1px);
   background-size: 60px 60px;
   mask-image: radial-gradient(ellipse 80% 80% at 50% 0%, black 0%, transparent 70%);
   pointer-events: none;
@@ -153,7 +154,7 @@ header {
   transform: translateX(-50%);
   width: 800px;
   height: 500px;
-  background: radial-gradient(ellipse, rgba(59,130,246,.12) 0%, rgba(139,92,246,.06) 40%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(59,130,246,.28) 0%, rgba(139,92,246,.14) 40%, transparent 70%);
   pointer-events: none;
   animation: hero-glow 6s ease-in-out infinite alternate;
 }
