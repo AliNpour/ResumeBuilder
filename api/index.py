@@ -111,8 +111,52 @@ Resume:
     return jsonify({"profile": profile, "resume_text": resume_text})
 
 
+def jsearch_jobs(query, location, num=5):
+    """Fetch real job listings from JSearch (RapidAPI) ΓÇö returns LinkedIn & Indeed URLs."""
+    import urllib.request
+    rapidapi_key = os.environ.get("RAPIDAPI_KEY", "")
+    if not rapidapi_key:
+        raise RuntimeError("RAPIDAPI_KEY not set")
+
+    url = (
+        "https://jsearch.p.rapidapi.com/search"
+        f"?query={urllib.parse.quote(query + ' ' + location)}"
+        "&num_pages=1"
+        "&date_posted=week"
+        "&results_per_page=" + str(num)
+    )
+    req = urllib.request.Request(url, headers={
+        "X-RapidAPI-Key":  rapidapi_key,
+        "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
+    })
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        raw = json.loads(resp.read())
+
+    results = []
+    for j in raw.get("data", [])[:num]:
+        mn = j.get("job_min_salary")
+        mx = j.get("job_max_salary")
+        sal_raw = f"USD {int(mn):,} - {int(mx):,}" if mn and mx else "Not listed"
+        sal_disp = f"USD {int(mn)//1000}k-{int(mx)//1000}k" if mn and mx else "Not listed"
+        site = "linkedin" if "linkedin" in (j.get("job_apply_link") or "").lower() else "indeed"
+        results.append({
+            "title":       j.get("job_title", ""),
+            "company":     j.get("employer_name", ""),
+            "location":    f"{j.get('job_city','')}, {j.get('job_state','')}".strip(", "),
+            "job_url":     j.get("job_apply_link") or j.get("job_google_link", ""),
+            "description": j.get("job_description", "")[:1500],
+            "salary_raw":  sal_raw,
+            "salary_display": sal_disp,
+            "is_remote":   j.get("job_is_remote", False),
+            "work_type":   "Remote" if j.get("job_is_remote") else "In-Office",
+            "site":        site,
+        })
+    return results
+
+
 @app.route("/api/search-jobs", methods=["POST"])
 def search_jobs_api():
+    import urllib.parse
     data = request.get_json()
     profile  = data.get("profile", {})
     location = data.get("location", "").strip()
@@ -121,6 +165,37 @@ def search_jobs_api():
 
     search_term = position or profile.get("current_title", "Software Engineer")
 
+    # ΓöÇΓöÇ Try JSearch (real LinkedIn/Indeed listings) first ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    rapidapi_key = os.environ.get("RAPIDAPI_KEY", "")
+    if rapidapi_key:
+        try:
+            jobs_raw = jsearch_jobs(search_term, location, num=10)
+            if jobs_raw:
+                # Score & enrich with Claude
+                client = make_client()
+                skills_short = ", ".join((profile.get("top_skills") or [])[:5])
+                for_scoring = [
+                    {"index": i, "title": j["title"], "company": j["company"],
+                     "description": j["description"][:300], "is_remote": j["is_remote"]}
+                    for i, j in enumerate(jobs_raw)
+                ]
+                scored = claude_json(client, f"""Score these jobs for the candidate. Return ONLY a JSON array.
+Each item: {{"index":<n>,"score":<6-10>,"work_type":"Remote|Hybrid|In-Office","role_summary":"1 sentence","key_qualifications":["X","X","X"]}}
+Candidate: {profile.get("current_title","Engineer")}, skills: {skills_short}
+Jobs: {json.dumps(for_scoring)}""", max_tokens=1500)
+
+                if isinstance(scored, list):
+                    results = []
+                    for s in scored:
+                        idx = s.get("index", -1)
+                        if 0 <= idx < len(jobs_raw):
+                            results.append({**jobs_raw[idx], **s})
+                    results.sort(key=lambda x: x.get("score", 0), reverse=True)
+                    return jsonify({"jobs": results[:5]})
+        except Exception:
+            pass  # Fall through to Claude fallback
+
+    # ΓöÇΓöÇ Fallback: Claude-generated jobs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     try:
         client = make_client()
         skills_short = ", ".join((profile.get("top_skills") or [])[:5])
@@ -136,7 +211,6 @@ Use real companies. Mix Remote/Hybrid/In-Office. Scores 6-10 desc.""", max_token
     except Exception as e:
         return jsonify({"error": f"Job search failed: {str(e)}"}), 500
 
-    # Claude sometimes wraps the array: {"jobs": [...]} or {"results": [...]}
     if isinstance(jobs, dict):
         for key in ("jobs", "results", "job_listings", "postings"):
             if isinstance(jobs.get(key), list):
@@ -146,7 +220,7 @@ Use real companies. Mix Remote/Hybrid/In-Office. Scores 6-10 desc.""", max_token
     if not isinstance(jobs, list) or not jobs:
         return jsonify({"error": "No jobs found. Try a different location or position."}), 404
 
-    return jsonify({"jobs": jobs[:10]})
+    return jsonify({"jobs": jobs[:5]})
 
 
 @app.route("/api/tailor-resume", methods=["POST"])

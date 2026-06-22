@@ -182,13 +182,15 @@ function renderJobs() {
     const source  = (job.site || 'job board').replace('linkedin', 'LinkedIn').replace('indeed', 'Indeed');
 
     const card = document.createElement('div');
-    const linkedinUrl = 'https://www.linkedin.com/jobs/search/?keywords=' +
-      encodeURIComponent(job.title + ' ' + job.company) +
-      '&location=' + encodeURIComponent(job.location || state._location);
-    const indeedUrl = 'https://www.indeed.com/jobs?q=' +
-      encodeURIComponent(job.title + ' ' + job.company) +
-      '&l=' + encodeURIComponent(job.location || state._location);
-    const postingUrl = job.job_url || linkedinUrl;
+    const siteName = (job.site || 'linkedin').toLowerCase();
+    const isIndeed  = siteName.includes('indeed');
+    const searchQ   = encodeURIComponent(job.title + ' ' + job.company);
+    const searchLoc = encodeURIComponent(job.location || state._location);
+    const postingUrl = job.job_url ||
+      (isIndeed
+        ? 'https://www.indeed.com/jobs?q=' + searchQ + '&l=' + searchLoc
+        : 'https://www.linkedin.com/jobs/search/?keywords=' + searchQ + '&location=' + searchLoc);
+    const platformLabel = isIndeed ? 'Search on Indeed' : 'Search on LinkedIn';
 
     card.className = 'job-card';
     card.dataset.idx = idx;
@@ -212,8 +214,7 @@ function renderJobs() {
         ${(job.key_qualifications || []).map(q => `<li>${esc(q)}</li>`).join('')}
       </ul>
       <div class="job-links">
-        <a href="${postingUrl}" target="_blank" class="job-link-btn">Search on LinkedIn &rarr;</a>
-        <a href="${indeedUrl}" target="_blank" class="job-link-btn job-link-btn-secondary">Search on Indeed &rarr;</a>
+        <a href="${postingUrl}" target="_blank" class="job-link-btn">${platformLabel} &rarr;</a>
       </div>
     `;
 
