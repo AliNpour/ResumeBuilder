@@ -120,10 +120,7 @@ def jsearch_jobs(query, location, num=5):
         raise RuntimeError("RAPIDAPI_KEY not set")
 
     q = urllib.parse.quote(f"{query} {location}".strip())
-    url = (
-        f"https://jsearch.p.rapidapi.com/search"
-        f"?query={q}&num_pages=1&date_posted=month&results_per_page={num}"
-    )
+    url = f"https://jsearch.p.rapidapi.com/search?query={q}&num_pages=1&results_per_page={num}"
     req = urllib.request.Request(url, headers={
         "X-RapidAPI-Key":  rapidapi_key,
         "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
@@ -168,7 +165,7 @@ def search_jobs_api():
     rapidapi_key = os.environ.get("RAPIDAPI_KEY", "")
     if rapidapi_key:
         try:
-            jobs_raw = jsearch_jobs(search_term, location, num=10)
+            jobs_raw = jsearch_jobs(search_term, location, num=5)
             if jobs_raw:
                 # Score & enrich with Claude
                 client = make_client()

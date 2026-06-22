@@ -183,14 +183,15 @@ function renderJobs() {
 
     const card = document.createElement('div');
     const siteName = (job.site || 'linkedin').toLowerCase();
-    const isIndeed  = siteName.includes('indeed');
-    const searchQ   = encodeURIComponent(job.title + ' ' + job.company);
-    const searchLoc = encodeURIComponent(job.location || state._location);
-    const postingUrl = job.job_url ||
-      (isIndeed
-        ? 'https://www.indeed.com/jobs?q=' + searchQ + '&l=' + searchLoc
-        : 'https://www.linkedin.com/jobs/search/?keywords=' + searchQ + '&location=' + searchLoc);
-    const platformLabel = isIndeed ? 'Search on Indeed' : 'Search on LinkedIn';
+    const searchQ   = encodeURIComponent((job.title + ' ' + job.company).trim());
+    const searchLoc = encodeURIComponent((job.location || state._location || '').trim());
+    const hasRealUrl = job.job_url && job.job_url.startsWith('http');
+    const postingUrl = hasRealUrl
+      ? job.job_url
+      : 'https://www.linkedin.com/jobs/search/?keywords=' + searchQ + '&location=' + searchLoc;
+    const platformLabel = hasRealUrl
+      ? (siteName.includes('indeed') ? 'Apply on Indeed' : 'Apply on LinkedIn')
+      : 'Search on LinkedIn';
 
     card.className = 'job-card';
     card.dataset.idx = idx;
