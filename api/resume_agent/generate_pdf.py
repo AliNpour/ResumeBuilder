@@ -33,6 +33,7 @@ JSON schema expected:
 
 import sys
 import json
+import re
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import inch
@@ -41,6 +42,35 @@ from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, HRFlowable, ListFlowable, ListItem
 )
 from reportlab.lib.enums import TA_LEFT, TA_CENTER
+
+def sanitize(text: str) -> str:
+    """Replace Unicode characters unsupported by Helvetica with ASCII equivalents."""
+    if not text:
+        return text
+    replacements = {
+        '–': '-',   # en dash
+        '—': '-',   # em dash
+        '‘': "'",   # left single quote
+        '’': "'",   # right single quote / apostrophe
+        '“': '"',   # left double quote
+        '”': '"',   # right double quote
+        '•': '*',   # bullet
+        'â': '-',  # mangled en dash
+        'â': '-',  # mangled em dash
+        ' ': ' ',   # non-breaking space
+        '…': '...',  # ellipsis
+    }
+    for char, replacement in replacements.items():
+        text = text.replace(char, replacement)
+    # Strip any remaining non-latin1 characters Helvetica can't handle
+    text = text.encode('latin-1', errors='replace').decode('latin-1')
+    return text
+
+
+def s(text) -> str:
+    """Sanitize a value that may be None."""
+    return sanitize(str(text)) if text else ''
+
 
 ACCENT = colors.HexColor("#1a3a5c")
 BODY_FONT = "Helvetica"
@@ -103,8 +133,8 @@ def build_pdf(data: dict, output_path: str):
     story = []
 
     # Header
-    story.append(Paragraph(data["name"], styles["ResumeName"]))
-    contact_parts = [p for p in [
+    story.append(Paragraph(s(data["name"]), styles["ResumeName"]))
+    contact_parts = [s(p) for p in [
         data.get("email"), data.get("phone"),
         data.get("location"), data.get("linkedin")
     ] if p]
@@ -114,37 +144,37 @@ def build_pdf(data: dict, output_path: str):
     # Summary
     if data.get("summary"):
         story += section_header("Professional Summary", styles)
-        story.append(Paragraph(data["summary"], styles["SummaryText"]))
+        story.append(Paragraph(s(data["summary"]), styles["SummaryText"]))
 
     # Skills
     if data.get("skills"):
         story += section_header("Core Skills", styles)
         story.append(Paragraph(
-            " • ".join(data["skills"]), styles["SkillText"]
+            " | ".join(s(sk) for sk in data["skills"]), styles["SkillText"]
         ))
 
     # Experience
     if data.get("experience"):
         story += section_header("Experience", styles)
         for job in data["experience"]:
-            story.append(Paragraph(job["title"], styles["JobTitle"]))
-            meta = job["company"]
+            story.append(Paragraph(s(job["title"]), styles["JobTitle"]))
+            meta = s(job["company"])
             if job.get("dates"):
-                meta += f"  |  {job['dates']}"
+                meta += f"  |  {s(job['dates'])}"
             story.append(Paragraph(meta, styles["JobMeta"]))
             for bullet in job.get("bullets", []):
-                story.append(Paragraph(f"• {bullet}", styles["Bullet"]))
+                story.append(Paragraph(f"- {s(bullet)}", styles["Bullet"]))
 
     # Education
     if data.get("education"):
         story += section_header("Education", styles)
         for edu in data["education"]:
-            line = edu["degree"]
+            line = s(edu["degree"])
             if edu.get("dates"):
-                line += f"  |  {edu['dates']}"
+                line += f"  |  {s(edu['dates'])}"
             story.append(Paragraph(line, styles["EduLine"]))
             detail_parts = [edu.get("school"), edu.get("details")]
-            detail = "  |  ".join(p for p in detail_parts if p)
+            detail = "  |  ".join(s(p) for p in detail_parts if p)
             if detail:
                 story.append(Paragraph(detail, styles["EduDetail"]))
 
@@ -152,7 +182,7 @@ def build_pdf(data: dict, output_path: str):
     if data.get("certifications"):
         story += section_header("Certifications", styles)
         for cert in data["certifications"]:
-            story.append(Paragraph(f"• {cert}", styles["CertText"]))
+            story.append(Paragraph(f"- {s(cert)}", styles["CertText"]))
 
     doc.build(story)
     print(f"PDF saved: {output_path}")
@@ -173,8 +203,8 @@ def build_pdf_bytes(data: dict) -> bytes:
     styles = build_styles()
     story = []
 
-    story.append(Paragraph(data["name"], styles["ResumeName"]))
-    contact_parts = [p for p in [
+    story.append(Paragraph(s(data["name"]), styles["ResumeName"]))
+    contact_parts = [s(p) for p in [
         data.get("email"), data.get("phone"),
         data.get("location"), data.get("linkedin")
     ] if p]
@@ -183,34 +213,34 @@ def build_pdf_bytes(data: dict) -> bytes:
 
     if data.get("summary"):
         story += section_header("Professional Summary", styles)
-        story.append(Paragraph(data["summary"], styles["SummaryText"]))
+        story.append(Paragraph(s(data["summary"]), styles["SummaryText"]))
 
     if data.get("skills"):
         story += section_header("Core Skills", styles)
-        story.append(Paragraph(" • ".join(data["skills"]), styles["SkillText"]))
+        story.append(Paragraph(" | ".join(s(sk) for sk in data["skills"]), styles["SkillText"]))
 
     if data.get("experience"):
         story += section_header("Experience", styles)
         for job in data["experience"]:
-            story.append(Paragraph(job["title"], styles["JobTitle"]))
-            meta = job["company"] + (f"  |  {job['dates']}" if job.get("dates") else "")
+            story.append(Paragraph(s(job["title"]), styles["JobTitle"]))
+            meta = s(job["company"]) + (f"  |  {s(job['dates'])}" if job.get("dates") else "")
             story.append(Paragraph(meta, styles["JobMeta"]))
             for bullet in job.get("bullets", []):
-                story.append(Paragraph(f"• {bullet}", styles["Bullet"]))
+                story.append(Paragraph(f"- {s(bullet)}", styles["Bullet"]))
 
     if data.get("education"):
         story += section_header("Education", styles)
         for edu in data["education"]:
-            line = edu["degree"] + (f"  |  {edu['dates']}" if edu.get("dates") else "")
+            line = s(edu["degree"]) + (f"  |  {s(edu['dates'])}" if edu.get("dates") else "")
             story.append(Paragraph(line, styles["EduLine"]))
-            detail = "  |  ".join(p for p in [edu.get("school"), edu.get("details")] if p)
+            detail = "  |  ".join(s(p) for p in [edu.get("school"), edu.get("details")] if p)
             if detail:
                 story.append(Paragraph(detail, styles["EduDetail"]))
 
     if data.get("certifications"):
         story += section_header("Certifications", styles)
         for cert in data["certifications"]:
-            story.append(Paragraph(f"• {cert}", styles["CertText"]))
+            story.append(Paragraph(f"- {s(cert)}", styles["CertText"]))
 
     doc.build(story)
     buffer.seek(0)
