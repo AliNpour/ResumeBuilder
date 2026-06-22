@@ -322,6 +322,8 @@ def generate_pdf_api():
         from generate_pdf import build_pdf_bytes
         pdf_bytes = build_pdf_bytes(resume_data)
     except Exception as e:
+        import traceback
+        print(f"[PDF error] {traceback.format_exc()}", flush=True)
         return jsonify({"error": str(e)}), 500
 
     return send_file(

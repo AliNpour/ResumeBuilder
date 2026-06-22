@@ -40,22 +40,50 @@ def s(v) -> str:
 
 def build_pdf_bytes(data: dict) -> bytes:
     from reportlab.lib.pagesizes import letter
-    from reportlab.lib.units import inch, pt
+    from reportlab.lib.units import inch
     from reportlab.lib import colors
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT
+    from reportlab.lib.styles import ParagraphStyle
+    from reportlab.lib.enums import TA_CENTER, TA_RIGHT
     from reportlab.platypus import (
         SimpleDocTemplate, Paragraph, Spacer,
         HRFlowable, Table, TableStyle, KeepTogether,
     )
 
-    DARK   = colors.HexColor('#1a3560')
-    MID    = colors.HexColor('#2c5282')
-    GREY   = colors.HexColor('#555555')
-    LGREY  = colors.HexColor('#888888')
-    BLACK  = colors.black
-    WHITE  = colors.white
-    BG_HDR = colors.HexColor('#1a3560')
+    DARK  = colors.HexColor('#1a3560')
+    MID   = colors.HexColor('#2c5282')
+    GREY  = colors.HexColor('#555555')
+    BLACK = colors.black
+    WHITE = colors.white
+
+    # Create all styles as standalone objects ΓÇö avoids the global singleton race condition
+    def st(**kw):
+        return ParagraphStyle('_', **kw)
+
+    ST_NAME    = st(fontName='Helvetica-Bold', fontSize=22,
+                    textColor=WHITE, alignment=TA_CENTER, leading=26)
+    ST_CONTACT = st(fontName='Helvetica', fontSize=9,
+                    textColor=colors.HexColor('#d0ddf5'), alignment=TA_CENTER, leading=13)
+    ST_SEC     = st(fontName='Helvetica-Bold', fontSize=10,
+                    textColor=DARK, spaceBefore=8, spaceAfter=1, leading=13)
+    ST_BODY    = st(fontName='Helvetica', fontSize=9.5,
+                    textColor=BLACK, leading=14, spaceAfter=2)
+    ST_BULLET  = st(fontName='Helvetica', fontSize=9,
+                    textColor=colors.HexColor('#222222'), leading=13,
+                    leftIndent=10, spaceAfter=1)
+    ST_JOBT    = st(fontName='Helvetica-Bold', fontSize=10,
+                    textColor=DARK, spaceBefore=5, spaceAfter=0, leading=13)
+    ST_JOBM    = st(fontName='Helvetica', fontSize=8.5,
+                    textColor=GREY, spaceAfter=2, leading=12)
+    ST_JOBDATE = st(fontName='Helvetica-Oblique', fontSize=8.5,
+                    textColor=GREY, spaceAfter=2, leading=12, alignment=TA_RIGHT)
+    ST_EDUT    = st(fontName='Helvetica-Bold', fontSize=9.5,
+                    textColor=DARK, spaceBefore=4, spaceAfter=0, leading=13)
+    ST_EDUS    = st(fontName='Helvetica', fontSize=8.5,
+                    textColor=GREY, spaceAfter=2, leading=12)
+    ST_EDUDATE = st(fontName='Helvetica-Oblique', fontSize=8.5,
+                    textColor=GREY, spaceAfter=2, leading=12, alignment=TA_RIGHT)
+    ST_CERT    = st(fontName='Helvetica', fontSize=9,
+                    textColor=BLACK, leading=13, spaceAfter=1)
 
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
@@ -64,37 +92,15 @@ def build_pdf_bytes(data: dict) -> bytes:
         topMargin=0.55*inch, bottomMargin=0.55*inch,
     )
 
-    ss = getSampleStyleSheet()
-    def add(name, **kw):
-        if name not in ss:
-            ss.add(ParagraphStyle(name=name, **kw))
-        return ss[name]
+    W = letter[0] - 0.65*inch*2
 
-    ST_NAME    = add('RN',  fontName='Helvetica-Bold', fontSize=22,
-                     textColor=WHITE, alignment=TA_CENTER, leading=26)
-    ST_CONTACT = add('RC',  fontName='Helvetica', fontSize=9,
-                     textColor=colors.HexColor('#d0ddf5'), alignment=TA_CENTER, leading=13)
-    ST_SEC     = add('RS',  fontName='Helvetica-Bold', fontSize=10,
-                     textColor=DARK, spaceBefore=8, spaceAfter=1, leading=13)
-    ST_BODY    = add('RB',  fontName='Helvetica', fontSize=9.5,
-                     textColor=BLACK, leading=14, spaceAfter=2)
-    ST_BULLET  = add('RBU', fontName='Helvetica', fontSize=9,
-                     textColor=colors.HexColor('#222222'), leading=13,
-                     leftIndent=10, spaceAfter=1)
-    ST_JOBT    = add('RJT', fontName='Helvetica-Bold', fontSize=10,
-                     textColor=DARK, spaceBefore=5, spaceAfter=0, leading=13)
-    ST_JOBM    = add('RJM', fontName='Helvetica', fontSize=8.5,
-                     textColor=GREY, spaceAfter=2, leading=12)
-    ST_EDUT    = add('RET', fontName='Helvetica-Bold', fontSize=9.5,
-                     textColor=DARK, spaceBefore=4, spaceAfter=0, leading=13)
-    ST_EDUS    = add('RES', fontName='Helvetica', fontSize=8.5,
-                     textColor=GREY, spaceAfter=2, leading=12)
-    ST_SKILL   = add('RSK', fontName='Helvetica', fontSize=9,
-                     textColor=BLACK, leading=14, spaceAfter=2)
-    ST_CERT    = add('RCT', fontName='Helvetica', fontSize=9,
-                     textColor=BLACK, leading=13, spaceAfter=1)
-
-    W = letter[0] - 0.65*inch*2  # usable width
+    ROW_PAD = [
+        ('LEFTPADDING',  (0,0), (-1,-1), 0),
+        ('RIGHTPADDING', (0,0), (-1,-1), 0),
+        ('TOPPADDING',   (0,0), (-1,-1), 0),
+        ('BOTTOMPADDING',(0,0), (-1,-1), 0),
+        ('VALIGN',       (0,0), (-1,-1), 'BOTTOM'),
+    ]
 
     def hr():
         return HRFlowable(width='100%', thickness=0.75, color=MID,
@@ -103,64 +109,65 @@ def build_pdf_bytes(data: dict) -> bytes:
     def section(title):
         return [Paragraph(title.upper(), ST_SEC), hr()]
 
+    def two_col(left_para, right_text, right_style):
+        t = Table([[left_para, Paragraph(right_text, right_style)]],
+                  colWidths=[W*0.7, W*0.3])
+        t.setStyle(TableStyle(ROW_PAD))
+        return t
+
     story = []
 
-    # ΓöÇΓöÇ Header block (dark background) ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-    name_para    = Paragraph(s(data.get('name', 'Resume')), ST_NAME)
+    # ΓöÇΓöÇ Header ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     contact_bits = [s(p) for p in [
         data.get('email'), data.get('phone'),
         data.get('location'), data.get('linkedin'),
     ] if p]
-    contact_para = Paragraph('   |   '.join(contact_bits), ST_CONTACT)
-
-    hdr_table = Table(
-        [[name_para], [contact_para]],
+    hdr = Table(
+        [[Paragraph(s(data.get('name', 'Resume')), ST_NAME)],
+         [Paragraph('   |   '.join(contact_bits), ST_CONTACT)]],
         colWidths=[W],
     )
-    hdr_table.setStyle(TableStyle([
-        ('BACKGROUND',    (0,0), (-1,-1), BG_HDR),
+    hdr.setStyle(TableStyle([
+        ('BACKGROUND',    (0,0), (-1,-1), DARK),
         ('TOPPADDING',    (0,0), (-1,-1), 12),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 8),
         ('RIGHTPADDING',  (0,0), (-1,-1), 8),
     ]))
-    story.append(hdr_table)
+    story.append(hdr)
     story.append(Spacer(1, 8))
 
-    # ΓöÇΓöÇ Summary ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    # ΓöÇΓöÇ Summary ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     if data.get('summary'):
         story += section('Professional Summary')
         story.append(Paragraph(s(data['summary']), ST_BODY))
 
-    # ΓöÇΓöÇ Skills ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    # ΓöÇΓöÇ Skills ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     skills = data.get('skills') or []
     if skills:
         story += section('Core Skills')
-        # wrap into rows of 4
         rows, row = [], []
         for sk in skills:
             row.append(s(sk))
             if len(row) == 4:
                 rows.append(row); row = []
         if row:
-            row += [''] * (4 - len(row))
-            rows.append(row)
+            rows.append(row + [''] * (4 - len(row)))
         if rows:
-            col_w = W / 4
-            t = Table(rows, colWidths=[col_w]*4)
+            t = Table(rows, colWidths=[W/4]*4)
             t.setStyle(TableStyle([
-                ('FONTNAME',    (0,0), (-1,-1), 'Helvetica'),
-                ('FONTSIZE',    (0,0), (-1,-1), 9),
-                ('TEXTCOLOR',   (0,0), (-1,-1), BLACK),
-                ('TOPPADDING',  (0,0), (-1,-1), 2),
-                ('BOTTOMPADDING',(0,0),(-1,-1), 2),
-                ('LEFTPADDING', (0,0), (-1,-1), 2),
-                ('VALIGN',      (0,0), (-1,-1), 'TOP'),
+                ('FONTNAME',      (0,0), (-1,-1), 'Helvetica'),
+                ('FONTSIZE',      (0,0), (-1,-1), 9),
+                ('TEXTCOLOR',     (0,0), (-1,-1), BLACK),
+                ('TOPPADDING',    (0,0), (-1,-1), 2),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 2),
+                ('LEFTPADDING',   (0,0), (-1,-1), 2),
+                ('VALIGN',        (0,0), (-1,-1), 'TOP'),
             ]))
             story.append(t)
         story.append(Spacer(1, 4))
 
-    # ΓöÇΓöÇ Experience ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    # ΓöÇΓöÇ Experience ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     exp = data.get('experience') or []
     if exp:
         story += section('Experience')
@@ -170,29 +177,17 @@ def build_pdf_bytes(data: dict) -> bytes:
             dates   = s(job.get('dates', ''))
             bullets = job.get('bullets') or []
 
-            # Title row: bold job title left, dates right
-            title_row = Table(
-                [[Paragraph(title, ST_JOBT),
-                  Paragraph(dates, ParagraphStyle('RJD', parent=ST_JOBM,
-                                                  alignment=TA_RIGHT, fontName='Helvetica-Oblique'))]],
-                colWidths=[W*0.7, W*0.3],
-            )
-            title_row.setStyle(TableStyle([
-                ('LEFTPADDING',  (0,0), (-1,-1), 0),
-                ('RIGHTPADDING', (0,0), (-1,-1), 0),
-                ('TOPPADDING',   (0,0), (-1,-1), 0),
-                ('BOTTOMPADDING',(0,0), (-1,-1), 0),
-                ('VALIGN',       (0,0), (-1,-1), 'BOTTOM'),
-            ]))
-
-            block = [title_row, Paragraph(company, ST_JOBM)]
+            block = [
+                two_col(Paragraph(title, ST_JOBT), dates, ST_JOBDATE),
+                Paragraph(company, ST_JOBM),
+            ]
             for b in bullets:
                 txt = s(b)
                 if txt:
                     block.append(Paragraph(f'-  {txt}', ST_BULLET))
             story.append(KeepTogether(block))
 
-    # ΓöÇΓöÇ Education ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    # ΓöÇΓöÇ Education ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     edu = data.get('education') or []
     if edu:
         story += section('Education')
@@ -201,30 +196,13 @@ def build_pdf_bytes(data: dict) -> bytes:
             school  = s(e.get('school', ''))
             dates   = s(e.get('dates', ''))
             details = s(e.get('details', ''))
-
-            deg_row = Table(
-                [[Paragraph(degree, ST_EDUT),
-                  Paragraph(dates, ParagraphStyle('RED', parent=ST_EDUS,
-                                                  alignment=TA_RIGHT, fontName='Helvetica-Oblique'))]],
-                colWidths=[W*0.7, W*0.3],
-            )
-            deg_row.setStyle(TableStyle([
-                ('LEFTPADDING',  (0,0), (-1,-1), 0),
-                ('RIGHTPADDING', (0,0), (-1,-1), 0),
-                ('TOPPADDING',   (0,0), (-1,-1), 0),
-                ('BOTTOMPADDING',(0,0), (-1,-1), 0),
-                ('VALIGN',       (0,0), (-1,-1), 'BOTTOM'),
-            ]))
-
-            sub = school
-            if details:
-                sub = f'{school}  |  {details}' if school else details
-            block = [deg_row]
+            sub = f'{school}  |  {details}' if school and details else school or details
+            block = [two_col(Paragraph(degree, ST_EDUT), dates, ST_EDUDATE)]
             if sub:
                 block.append(Paragraph(sub, ST_EDUS))
             story.append(KeepTogether(block))
 
-    # ΓöÇΓöÇ Certifications ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    # ΓöÇΓöÇ Certifications ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     certs = data.get('certifications') or []
     if certs:
         story += section('Certifications')
