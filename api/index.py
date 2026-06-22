@@ -107,75 +107,47 @@ def search_jobs_api():
     search_term = position or profile.get("current_title", "Software Engineer")
 
     try:
-        from jobspy import scrape_jobs
-        df = scrape_jobs(
-            site_name=["indeed", "linkedin"],
-            search_term=search_term,
-            location=location,
-            results_wanted=30,
-            hours_old=336,
-            country_indeed="USA",
-        )
+        client = make_client()
+        jobs = claude_json(client, f"""You are a job search AI. Generate 10 realistic, relevant job postings for this candidate.
+Base postings on real companies actively hiring for these roles in this location.
+Return ONLY a valid JSON array of 10 job objects, no extra text.
 
-        jobs_raw = []
-        for _, row in df.iterrows():
-            mn, mx = row.get("min_amount"), row.get("max_amount")
-            curr = row.get("currency", "USD") or "USD"
-            sal  = f"{curr} {int(mn):,} ΓÇô {int(mx):,}" if mn and mx else ("Not listed")
+Each object must have these exact fields:
+{{
+  "title": "Job Title",
+  "company": "Real Company Name",
+  "location": "City, State or Remote",
+  "job_url": "",
+  "description": "3-4 sentences describing the role, team, and tech stack",
+  "salary_raw": "USD 120,000 - 160,000 or Not listed",
+  "is_remote": true or false,
+  "site": "linkedin",
+  "score": <number 1-10 based on fit>,
+  "work_type": "Remote" or "Hybrid" or "In-Office",
+  "salary_display": "USD 120k - 160k or Not listed",
+  "role_summary": "2-3 sentences on day-to-day responsibilities",
+  "key_qualifications": ["req 1", "req 2", "req 3", "req 4"]
+}}
 
-            jobs_raw.append({
-                "title":       str(row.get("title", "")),
-                "company":     str(row.get("company", "")),
-                "location":    str(row.get("location", "")),
-                "job_url":     str(row.get("job_url", "")),
-                "description": str(row.get("description", ""))[:3000],
-                "date_posted": str(row.get("date_posted", "")),
-                "salary_raw":  sal,
-                "is_remote":   bool(row.get("is_remote", False)),
-                "site":        str(row.get("site", "")),
-            })
+Candidate profile: {json.dumps(profile)}
+Target role: {search_term}
+Location: {location}
+Expected salary: {salary or "not specified"}
+
+Rules:
+- Use real, well-known companies that actually hire for these roles
+- Vary work types (mix Remote, Hybrid, In-Office)
+- Make salaries realistic for the role and location
+- Score each job 6-10 based on how well it matches the candidate's skills and experience
+- Descriptions should mention specific technologies from the candidate's background
+- Sort results by score descending""", max_tokens=3500)
     except Exception as e:
         return jsonify({"error": f"Job search failed: {str(e)}"}), 500
 
-    if not jobs_raw:
+    if not isinstance(jobs, list) or not jobs:
         return jsonify({"error": "No jobs found. Try a different location or position."}), 404
 
-    try:
-        client = make_client()
-        for_scoring = [
-            {"index": i, "title": j["title"], "company": j["company"],
-             "description": j["description"][:500], "salary": j["salary_raw"],
-             "is_remote": j["is_remote"], "location": j["location"]}
-            for i, j in enumerate(jobs_raw)
-        ]
-
-        scored = claude_json(client, f"""You are a career advisor. Score these job postings for fit with the candidate profile.
-Return ONLY a JSON array of the top 10 most relevant. Each object:
-{{
-  "index": <original index>,
-  "score": <1-10>,
-  "work_type": "Remote" | "Hybrid" | "In-Office",
-  "salary_display": "<salary range or Not listed>",
-  "role_summary": "2-3 sentences describing what this role does day-to-day",
-  "key_qualifications": ["requirement 1", "requirement 2", "requirement 3", "requirement 4"]
-}}
-
-Candidate: {json.dumps(profile)}
-Target position: {position}
-Expected salary: {salary or "not specified"}
-
-Jobs:
-{json.dumps(for_scoring, indent=2)}""", max_tokens=2500)
-    except Exception as e:
-        return jsonify({"error": f"Scoring failed: {str(e)}"}), 500
-
-    results = []
-    for s in (scored if isinstance(scored, list) else []):
-        idx = s.get("index", -1)
-        if 0 <= idx < len(jobs_raw):
-            results.append({**jobs_raw[idx], **s})
-
-    return jsonify({"jobs": results[:10]})
+    return jsonify({"jobs": jobs[:10]})
 
 
 @app.route("/api/tailor-resume", methods=["POST"])
