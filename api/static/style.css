@@ -1,4 +1,4 @@
-/* ── Reset & Variables ─────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Reset & Variables ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -37,12 +37,12 @@ body {
   overflow-x: hidden;
 }
 
-/* ── Scrollbar ────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Scrollbar ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(59,130,246,.3); border-radius: 3px; }
 
-/* ── Animated background ──────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Animated background ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 body::before {
   content: '';
   position: fixed;
@@ -55,7 +55,7 @@ body::before {
   z-index: 0;
 }
 
-/* ── Header ──────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Header ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 header {
   background: rgba(3,6,15,.8);
   border-bottom: 1px solid var(--border);
@@ -122,7 +122,7 @@ header {
   50% { opacity: .8; box-shadow: 0 0 0 4px rgba(16,185,129,0); }
 }
 
-/* ── Hero ────────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Hero ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .hero {
   position: relative;
   padding: 6rem 2rem 4rem;
@@ -256,7 +256,173 @@ header {
   margin-top: .1rem;
 }
 
-/* ── Steps indicator ─────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Floating particles ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.particles { position: absolute; inset: 0; pointer-events: none; }
+
+.particle {
+  position: absolute;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(59,130,246,.5);
+  animation: float-particle 8s ease-in-out infinite;
+}
+
+.particle-lg {
+  width: 6px; height: 6px;
+  background: rgba(139,92,246,.4);
+}
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) scale(1); opacity: .4; }
+  50%       { transform: translateY(-20px) scale(1.3); opacity: .8; }
+}
+
+/* ΓöÇΓöÇ Hero illustration ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+.hero-illustration {
+  position: relative;
+  width: 440px;
+  height: 200px;
+  margin: 0 auto 2.5rem;
+  z-index: 1;
+}
+
+@media (max-width: 500px) {
+  .hero-illustration { width: 100%; height: 170px; transform: scale(.85); }
+}
+
+.hi-card {
+  position: absolute;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  padding: 1rem 1.1rem;
+}
+
+.hi-resume {
+  left: 0; top: 10px;
+  width: 190px;
+  animation: hi-float 5s ease-in-out infinite;
+}
+
+@keyframes hi-float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+
+.hi-card-header {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  margin-bottom: .75rem;
+}
+
+.hi-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--purple));
+  flex-shrink: 0;
+}
+
+.hi-line {
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.12);
+  margin-bottom: .2rem;
+}
+
+.hi-line-name { width: 80px; height: 8px; background: rgba(255,255,255,.2); }
+.hi-line-sub  { width: 55px; height: 6px; background: rgba(255,255,255,.1); }
+
+.hi-section-label {
+  font-size: .55rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--blue3);
+  margin-bottom: .4rem;
+  opacity: .8;
+}
+
+/* AI scan line */
+.hi-scan {
+  position: absolute;
+  left: 0; right: 55%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--blue), transparent);
+  top: 50%;
+  animation: hi-scan 2.5s ease-in-out infinite;
+  opacity: .8;
+}
+
+@keyframes hi-scan {
+  0%   { top: 20%; opacity: 0; }
+  20%  { opacity: .8; }
+  80%  { opacity: .8; }
+  100% { top: 85%; opacity: 0; }
+}
+
+/* AI core in middle */
+.hi-ai-core {
+  position: absolute;
+  left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.25) 0%, rgba(139,92,246,.15) 60%, transparent 80%);
+  border: 1px solid rgba(59,130,246,.3);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue3);
+  animation: hi-core-pulse 3s ease-in-out infinite;
+}
+
+@keyframes hi-core-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(59,130,246,.2); transform: translate(-50%,-50%) scale(1); }
+  50%       { box-shadow: 0 0 0 12px rgba(59,130,246,0); transform: translate(-50%,-50%) scale(1.08); }
+}
+
+/* SVG connectors */
+.hi-connectors {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+
+/* Match cards */
+.hi-match {
+  right: 0;
+  width: 155px;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .6rem .8rem;
+  animation: hi-float 5s ease-in-out infinite;
+}
+
+.hi-match1 { top: 10px;  animation-delay: 0s; }
+.hi-match2 { top: 76px;  animation-delay: .8s; }
+.hi-match3 { top: 142px; animation-delay: 1.6s; }
+
+.hi-match-score {
+  font-size: .75rem;
+  font-weight: 800;
+  color: var(--green);
+  background: rgba(16,185,129,.15);
+  border: 1px solid rgba(16,185,129,.3);
+  border-radius: 8px;
+  padding: .3rem .5rem;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Stats dividers */
+.hero-stat-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255,255,255,.08);
+}
+
+/* ΓöÇΓöÇ Steps indicator ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .steps-bar {
   display: flex;
   align-items: center;
@@ -326,7 +492,7 @@ header {
 }
 .step-line.done::after { transform: scaleX(1); }
 
-/* ── Main layout ─────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Main layout ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 main {
   max-width: 1140px;
   margin: 0 auto;
@@ -335,7 +501,7 @@ main {
   z-index: 1;
 }
 
-/* ── Section panels ──────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Section panels ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .panel { display: none; }
 .panel.active { display: block; animation: fadeUp .5s cubic-bezier(.22,1,.36,1); }
 
@@ -344,7 +510,7 @@ main {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── Glass Cards ─────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Glass Cards ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .card {
   background: rgba(255,255,255,.035);
   border: 1px solid rgba(255,255,255,.08);
@@ -392,7 +558,7 @@ main {
 .card-icon-blue   { background: rgba(59,130,246,.15); color: var(--blue3); }
 .card-icon-purple { background: rgba(139,92,246,.15); color: var(--purple2); }
 
-/* ── Form elements ───────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Form elements ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 label {
   display: block;
   font-size: .75rem;
@@ -433,7 +599,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 .form-group { margin-bottom: 1.25rem; }
 .form-group:last-child { margin-bottom: 0; }
 
-/* ── Drop zone ───────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Drop zone ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .dropzone {
   border: 2px dashed rgba(255,255,255,.1);
   border-radius: var(--radius);
@@ -494,7 +660,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
   background: var(--border);
 }
 
-/* ── How it works panel ──────────────────────────────────────────────── */
+/* ΓöÇΓöÇ How it works panel ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .how-it-works {
   margin-top: 1.5rem;
   padding: 1.25rem;
@@ -533,7 +699,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
   background: rgba(255,255,255,.05);
 }
 
-/* ── Buttons ─────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Buttons ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -593,7 +759,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 .btn:disabled { opacity: .4; cursor: not-allowed; transform: none !important; }
 .btn-full { width: 100%; }
 
-/* ── Loading ─────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Loading ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .loading-panel {
   text-align: center;
   padding: 6rem 2rem;
@@ -694,7 +860,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 }
 .loading-step.done .dot { background: var(--green); box-shadow: 0 0 8px var(--green); }
 
-/* ── Jobs grid ───────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Jobs grid ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .jobs-header {
   display: flex;
   align-items: center;
@@ -762,7 +928,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 }
 
 .job-card.selected::after {
-  content: '✓';
+  content: 'Γ£ô';
   position: absolute;
   top: 1.1rem; right: 1.1rem;
   width: 26px; height: 26px;
@@ -848,7 +1014,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
   line-height: 1.4;
 }
 .job-quals li::before {
-  content: '›';
+  content: 'ΓÇ║';
   color: var(--blue3);
   font-weight: 700;
   flex-shrink: 0;
@@ -867,7 +1033,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 }
 .job-link:hover { color: var(--purple2); }
 
-/* ── Select bar ──────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Select bar ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .select-bar {
   position: sticky;
   bottom: 1.5rem;
@@ -888,7 +1054,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 .select-bar p { color: var(--sub); font-size: .9rem; }
 .select-bar p strong { color: var(--text); font-size: 1.1rem; }
 
-/* ── Resume preview ──────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Resume preview ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .resume-review {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -954,9 +1120,9 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
   position: relative;
   line-height: 1.5;
 }
-.changes-list li::before { content: '→'; position: absolute; left: 0; color: var(--blue3); font-weight: 700; }
+.changes-list li::before { content: 'ΓåÆ'; position: absolute; left: 0; color: var(--blue3); font-weight: 700; }
 
-/* ── Tabs ────────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Tabs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .tabs {
   display: flex;
   gap: .4rem;
@@ -983,7 +1149,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 .tab-btn:hover { color: var(--text); }
 .tab-btn.active { color: var(--blue3); border-bottom-color: var(--blue); }
 
-/* ── Two column layout ───────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Two column layout ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -992,7 +1158,7 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 }
 @media (max-width: 860px) { .two-col { grid-template-columns: 1fr; } }
 
-/* ── Toast ───────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Toast ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .toast {
   position: fixed;
   bottom: 2rem;
@@ -1014,14 +1180,14 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 .toast.error  { border-color: rgba(239,68,68,.4); }
 .toast.success{ border-color: rgba(16,185,129,.4); }
 
-/* ── Utility ─────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Utility ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .mt-1 { margin-top: .5rem; }
 .mt-2 { margin-top: 1rem; }
 .mt-3 { margin-top: 1.5rem; }
 .mb-2 { margin-bottom: 1rem; }
 .hidden { display: none !important; }
 
-/* ── Footer ──────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Footer ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 footer {
   text-align: center;
   padding: 2.5rem;

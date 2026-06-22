@@ -20,7 +20,7 @@ app = Flask(
 )
 
 
-# ── Helpers ────────────────────────────────────────────────────────────────
+# ΓöÇΓöÇ Helpers ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 def make_client():
     import anthropic
@@ -44,7 +44,7 @@ def claude_json(client, prompt: str, max_tokens: int = 2000):
     return json.loads(text.strip())
 
 
-# ── Routes ──────────────────────────────────────────────────────────────────
+# ΓöÇΓöÇ Routes ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
 
 @app.route("/")
 def index():
@@ -121,7 +121,7 @@ def search_jobs_api():
         for _, row in df.iterrows():
             mn, mx = row.get("min_amount"), row.get("max_amount")
             curr = row.get("currency", "USD") or "USD"
-            sal  = f"{curr} {int(mn):,} – {int(mx):,}" if mn and mx else ("Not listed")
+            sal  = f"{curr} {int(mn):,} ΓÇô {int(mx):,}" if mn and mx else ("Not listed")
 
             jobs_raw.append({
                 "title":       str(row.get("title", "")),
@@ -191,7 +191,7 @@ def tailor_resume_api():
     for job in jobs:
         try:
             tailored = claude_json(client, f"""You are an expert resume writer. Tailor this resume for the job below.
-Return ONLY valid JSON — no markdown, no explanation outside JSON.
+Return ONLY valid JSON ΓÇö no markdown, no explanation outside JSON.
 
 RULES:
 - Mirror the job's keywords and phrases naturally

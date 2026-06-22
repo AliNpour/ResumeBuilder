@@ -1,4 +1,4 @@
-/* ── State ────────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ State ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 const state = {
   resumeText:   '',
   profile:      null,
@@ -9,7 +9,7 @@ const state = {
   currentTab:   0,
 };
 
-/* ── Utilities ───────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Utilities ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 const $  = (s, ctx = document) => ctx.querySelector(s);
 const $$ = (s, ctx = document) => [...ctx.querySelectorAll(s)];
 
@@ -44,7 +44,7 @@ function updateSteps(panel) {
 }
 
 
-/* ── File upload / drag-drop ─────────────────────────────────────────── */
+/* ΓöÇΓöÇ File upload / drag-drop ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 function initDropzone() {
   const zone  = $('#dropzone');
   const input = $('#file-input');
@@ -66,13 +66,13 @@ function initDropzone() {
     const allowed = ['.pdf', '.docx', '.doc', '.txt'];
     const ext = '.' + file.name.split('.').pop().toLowerCase();
     if (!allowed.includes(ext)) { showToast('Please upload a PDF, DOCX, or TXT file', 'error'); return; }
-    name.textContent = '📎 ' + file.name;
+    name.textContent = '≡ƒôÄ ' + file.name;
     $('#resume-textarea').value = '';
     state._file = file;
   }
 }
 
-/* ── Step 1: Upload & Analyze ────────────────────────────────────────── */
+/* ΓöÇΓöÇ Step 1: Upload & Analyze ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 async function analyzeResume() {
   const location = $('#location').value.trim();
   const position = $('#position').value.trim();
@@ -144,12 +144,12 @@ async function searchJobs() {
   }
 }
 
-/* ── Loading steps ───────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Loading steps ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 const LOADING_STEPS = [
-  'Reading your resume…',
-  'Extracting your profile with AI…',
-  'Searching LinkedIn & Indeed…',
-  'Scoring job relevance…',
+  'Reading your resumeΓÇª',
+  'Extracting your profile with AIΓÇª',
+  'Searching LinkedIn & IndeedΓÇª',
+  'Scoring job relevanceΓÇª',
 ];
 
 function setLoadingStep(i) {
@@ -160,7 +160,7 @@ function setLoadingStep(i) {
   });
 }
 
-/* ── Step 3: Jobs ────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Step 3: Jobs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 function renderJobs() {
   const grid = $('#jobs-grid');
   grid.innerHTML = '';
@@ -184,16 +184,16 @@ function renderJobs() {
         <div class="job-score">${job.score}/10</div>
       </div>
       <div class="job-tags">
-        <span class="tag tag-location">📍 ${esc(job.location || state._location)}</span>
-        <span class="tag tag-worktype">🏢 ${esc(job.work_type || 'In-Office')}</span>
-        <span class="tag tag-salary">💰 ${esc(job.salary_display || job.salary_raw || 'Not listed')}</span>
+        <span class="tag tag-location">≡ƒôì ${esc(job.location || state._location)}</span>
+        <span class="tag tag-worktype">≡ƒÅó ${esc(job.work_type || 'In-Office')}</span>
+        <span class="tag tag-salary">≡ƒÆ░ ${esc(job.salary_display || job.salary_raw || 'Not listed')}</span>
         <span class="tag tag-source">${esc(source)}</span>
       </div>
       <p class="job-summary">${esc(job.role_summary || job.description?.substring(0, 180) || '')}</p>
       <ul class="job-quals">
         ${(job.key_qualifications || []).map(q => `<li>${esc(q)}</li>`).join('')}
       </ul>
-      ${job.job_url ? `<a href="${esc(job.job_url)}" target="_blank" class="job-link">View posting ↗</a>` : ''}
+      ${job.job_url ? `<a href="${esc(job.job_url)}" target="_blank" class="job-link">View posting Γåù</a>` : ''}
     `;
 
     card.addEventListener('click', e => {
@@ -221,7 +221,7 @@ function esc(str) {
   return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
-/* ── Step 4: Tailor ──────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Step 4: Tailor ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 async function tailorResumes() {
   const jobs = state.selectedJobs.map(i => state.jobs[i]);
   showPanel('tailoring');
@@ -270,7 +270,7 @@ async function downloadPDF(resumeData, company) {
   }
 }
 
-/* ── Step 5: Review ──────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Step 5: Review ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 function renderReview() {
   const tabs    = $('#review-tabs');
   const content = $('#review-content');
@@ -310,20 +310,20 @@ function renderReview() {
 
     pane.innerHTML = `
       <div class="changes-list mb-2">
-        <h3>✨ Changes Made</h3>
+        <h3>Γ£¿ Changes Made</h3>
         <ul style="list-style:none;padding:0">${changes || '<li>Resume tailored for this role</li>'}</ul>
       </div>
 
       <div class="resume-review">
         <div class="resume-pane">
-          <div class="pane-header original">📄 Original Resume</div>
-          <div class="pane-body" style="white-space:pre-wrap;font-size:.8rem">${esc(state.resumeText.substring(0, 2000))}${state.resumeText.length > 2000 ? '\n…' : ''}</div>
+          <div class="pane-header original">≡ƒôä Original Resume</div>
+          <div class="pane-body" style="white-space:pre-wrap;font-size:.8rem">${esc(state.resumeText.substring(0, 2000))}${state.resumeText.length > 2000 ? '\nΓÇª' : ''}</div>
         </div>
         <div class="resume-pane">
-          <div class="pane-header tailored">✨ Tailored for ${esc(resume.job_title || 'this role')}</div>
+          <div class="pane-header tailored">Γ£¿ Tailored for ${esc(resume.job_title || 'this role')}</div>
           <div class="pane-body">
             <div style="font-size:1.1rem;font-weight:700;margin-bottom:.25rem">${esc(resume.name)}</div>
-            <div style="color:var(--sub2);font-size:.8rem;margin-bottom:.75rem">${esc(resume.email)} · ${esc(resume.phone)}</div>
+            <div style="color:var(--sub2);font-size:.8rem;margin-bottom:.75rem">${esc(resume.email)} ┬╖ ${esc(resume.phone)}</div>
             <div style="margin-bottom:.75rem"><strong style="color:var(--blue);font-size:.8rem">SUMMARY</strong><br>${esc(resume.summary)}</div>
             <div style="margin-bottom:.75rem"><strong style="color:var(--blue);font-size:.8rem">SKILLS</strong><br><span style="font-size:.82rem">${esc(skills)}</span></div>
             <div><strong style="color:var(--blue);font-size:.8rem">EXPERIENCE</strong><br>${expHtml}</div>
@@ -333,10 +333,10 @@ function renderReview() {
 
       <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
         <button class="btn btn-success" onclick="downloadPDF(state.tailored[${i}], '${esc(resume.job_company || 'resume')}')">
-          ⬇ Download PDF Resume
+          Γ¼ç Download PDF Resume
         </button>
         ${resume.job_url
-          ? `<a href="${esc(resume.job_url)}" target="_blank" class="btn btn-secondary">🔗 View Job Posting ↗</a>`
+          ? `<a href="${esc(resume.job_url)}" target="_blank" class="btn btn-secondary">≡ƒöù View Job Posting Γåù</a>`
           : ''}
         <div style="margin-left:auto">
           <span class="tag tag-worktype">${esc(resume.work_type || '')}</span>
@@ -349,7 +349,7 @@ function renderReview() {
   });
 }
 
-/* ── Restart ─────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Restart ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 function restart() {
   state.resumeText = '';
   state.profile    = null;
@@ -364,7 +364,7 @@ function restart() {
   showPanel('upload');
 }
 
-/* ── Init ────────────────────────────────────────────────────────────── */
+/* ΓöÇΓöÇ Init ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 document.addEventListener('DOMContentLoaded', () => {
   initDropzone();
   showPanel('upload');

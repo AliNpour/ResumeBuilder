@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>ResumeBuilder — AI Job Matching</title>
+  <title>ResumeBuilder ΓÇö AI Job Matching</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="/static/style.css"/>
 </head>
 <body>
 
-<!-- ── Header ─────────────────────────────────────────────────────────── -->
+<!-- ΓöÇΓöÇ Header ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
 <header>
   <a href="/" class="logo">
     <div class="logo-icon">
@@ -29,11 +29,24 @@
   </div>
 </header>
 
-<!-- ── Hero ───────────────────────────────────────────────────────────── -->
+<!-- ΓöÇΓöÇ Hero ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
 <div class="hero">
+
+  <!-- Floating particles -->
+  <div class="particles" aria-hidden="true">
+    <div class="particle" style="left:10%;top:20%;animation-delay:0s"></div>
+    <div class="particle" style="left:25%;top:60%;animation-delay:1.2s"></div>
+    <div class="particle" style="left:45%;top:15%;animation-delay:2.1s"></div>
+    <div class="particle" style="left:65%;top:70%;animation-delay:.6s"></div>
+    <div class="particle" style="left:80%;top:25%;animation-delay:1.8s"></div>
+    <div class="particle" style="left:90%;top:55%;animation-delay:3s"></div>
+    <div class="particle particle-lg" style="left:15%;top:75%;animation-delay:.4s"></div>
+    <div class="particle particle-lg" style="left:70%;top:10%;animation-delay:2.5s"></div>
+  </div>
+
   <div class="hero-badge">
     <div class="hero-badge-dot"></div>
-    LinkedIn &amp; Indeed · Real-Time Search
+    LinkedIn &amp; Indeed ┬╖ Real-Time Search
   </div>
 
   <h1>
@@ -42,22 +55,89 @@
   </h1>
 
   <p class="hero-sub">
-    Upload your resume, set your location — our AI searches thousands of live postings,
+    Upload your resume, set your location ΓÇö our AI searches thousands of live postings,
     scores matches, and tailors your resume for every application.
   </p>
+
+  <!-- Hero illustration -->
+  <div class="hero-illustration" aria-hidden="true">
+    <!-- Resume card -->
+    <div class="hi-card hi-resume">
+      <div class="hi-card-header">
+        <div class="hi-avatar"></div>
+        <div>
+          <div class="hi-line hi-line-name"></div>
+          <div class="hi-line hi-line-sub"></div>
+        </div>
+      </div>
+      <div class="hi-line" style="width:90%;margin-bottom:.4rem"></div>
+      <div class="hi-line" style="width:75%;margin-bottom:.4rem"></div>
+      <div class="hi-line" style="width:82%;margin-bottom:.9rem"></div>
+      <div class="hi-section-label">EXPERIENCE</div>
+      <div class="hi-line" style="width:88%;margin-bottom:.3rem"></div>
+      <div class="hi-line" style="width:65%;margin-bottom:.3rem"></div>
+      <div class="hi-line" style="width:78%"></div>
+    </div>
+    <!-- AI scan line -->
+    <div class="hi-scan"></div>
+    <!-- Job match cards -->
+    <div class="hi-card hi-match hi-match1">
+      <div class="hi-match-score">9.2</div>
+      <div>
+        <div class="hi-line" style="width:100px;height:8px;margin-bottom:.3rem"></div>
+        <div class="hi-line" style="width:70px;height:6px;opacity:.5"></div>
+      </div>
+    </div>
+    <div class="hi-card hi-match hi-match2">
+      <div class="hi-match-score" style="background:rgba(139,92,246,.2);color:#a78bfa;border-color:rgba(139,92,246,.3)">8.7</div>
+      <div>
+        <div class="hi-line" style="width:90px;height:8px;margin-bottom:.3rem"></div>
+        <div class="hi-line" style="width:60px;height:6px;opacity:.5"></div>
+      </div>
+    </div>
+    <div class="hi-card hi-match hi-match3">
+      <div class="hi-match-score" style="background:rgba(20,184,166,.15);color:#14b8a6;border-color:rgba(20,184,166,.3)">8.1</div>
+      <div>
+        <div class="hi-line" style="width:80px;height:8px;margin-bottom:.3rem"></div>
+        <div class="hi-line" style="width:55px;height:6px;opacity:.5"></div>
+      </div>
+    </div>
+    <!-- Connection lines SVG -->
+    <svg class="hi-connectors" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M 200 80 Q 260 80 280 50" stroke="url(#g1)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.6"/>
+      <path d="M 200 100 Q 265 100 280 100" stroke="url(#g2)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.5"/>
+      <path d="M 200 120 Q 260 120 280 150" stroke="url(#g3)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.4"/>
+      <defs>
+        <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#10b981"/></linearGradient>
+        <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#a78bfa"/></linearGradient>
+        <linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#14b8a6"/></linearGradient>
+      </defs>
+    </svg>
+    <!-- AI brain icon in center -->
+    <div class="hi-ai-core">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M12 2a4 4 0 014 4v1a4 4 0 01-4 4 4 4 0 01-4-4V6a4 4 0 014-4z"/>
+        <path d="M8 11v2a4 4 0 004 4 4 4 0 004-4v-2"/>
+        <line x1="12" y1="17" x2="12" y2="21"/>
+        <line x1="8" y1="21" x2="16" y2="21"/>
+      </svg>
+    </div>
+  </div>
 
   <div class="hero-stats">
     <div class="hero-stat">
       <div class="hero-stat-num">10+</div>
       <div class="hero-stat-label">Job Matches</div>
     </div>
+    <div class="hero-stat-divider"></div>
     <div class="hero-stat">
       <div class="hero-stat-num">2 min</div>
       <div class="hero-stat-label">Average Time</div>
     </div>
+    <div class="hero-stat-divider"></div>
     <div class="hero-stat">
       <div class="hero-stat-num">ATS</div>
-      <div class="hero-stat-label">Friendly PDF</div>
+      <div class="hero-stat-label">Ready PDF</div>
     </div>
   </div>
 
@@ -90,10 +170,10 @@
   </div>
 </div>
 
-<!-- ── Main ───────────────────────────────────────────────────────────── -->
+<!-- ΓöÇΓöÇ Main ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
 <main>
 
-  <!-- ══ Panel 1: Upload ════════════════════════════════════════════════ -->
+  <!-- ΓòÉΓòÉ Panel 1: Upload ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ -->
   <div id="panel-upload" class="panel active">
     <div class="two-col">
 
@@ -112,7 +192,7 @@
 
           <div id="dropzone" class="dropzone">
             <input type="file" id="file-input" accept=".pdf,.docx,.doc,.txt"/>
-            <div class="dropzone-icon">📄</div>
+            <div class="dropzone-icon">≡ƒôä</div>
             <p><strong>Drop your resume here</strong> or click to browse</p>
             <p style="font-size:.75rem;margin-top:.3rem;color:var(--sub2)">PDF, DOCX, DOC or TXT</p>
             <div id="file-name" class="file-name"></div>
@@ -121,7 +201,7 @@
           <div class="divider">or paste your resume text</div>
 
           <div class="form-group">
-            <textarea id="resume-textarea" placeholder="Paste your full resume content here…"></textarea>
+            <textarea id="resume-textarea" placeholder="Paste your full resume content hereΓÇª"></textarea>
           </div>
         </div>
       </div>
@@ -139,18 +219,18 @@
           </div>
 
           <div class="form-group">
-            <label>📍 Location *</label>
+            <label>≡ƒôì Location *</label>
             <input type="text" id="location" placeholder="e.g. Vancouver, BC or Remote"/>
           </div>
 
           <div class="form-group">
-            <label>💼 Target Position <span style="font-size:.85em;opacity:.6;font-weight:500;text-transform:none;letter-spacing:0">(optional)</span></label>
-            <input type="text" id="position" placeholder="Leave blank — AI will decide from your resume"/>
+            <label>≡ƒÆ╝ Target Position <span style="font-size:.85em;opacity:.6;font-weight:500;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <input type="text" id="position" placeholder="Leave blank ΓÇö AI will decide from your resume"/>
           </div>
 
           <div class="form-group">
-            <label>💰 Expected Salary <span style="font-size:.85em;opacity:.6;font-weight:500;text-transform:none;letter-spacing:0">(optional)</span></label>
-            <input type="text" id="salary" placeholder="e.g. $90,000 – $120,000 CAD"/>
+            <label>≡ƒÆ░ Expected Salary <span style="font-size:.85em;opacity:.6;font-weight:500;text-transform:none;letter-spacing:0">(optional)</span></label>
+            <input type="text" id="salary" placeholder="e.g. $90,000 ΓÇô $120,000 CAD"/>
           </div>
 
           <div class="form-group mt-3">
@@ -165,19 +245,19 @@
           <div class="how-it-works">
             <div class="how-it-works-title">How it works</div>
             <div class="how-step">
-              <div class="how-step-icon">🔍</div>
+              <div class="how-step-icon">≡ƒöì</div>
               <span>Scans LinkedIn &amp; Indeed for recent postings matching your profile</span>
             </div>
             <div class="how-step">
-              <div class="how-step-icon">🤖</div>
+              <div class="how-step-icon">≡ƒñû</div>
               <span>AI scores and ranks the top 10 most relevant matches</span>
             </div>
             <div class="how-step">
-              <div class="how-step-icon">✍️</div>
+              <div class="how-step-icon">Γ£ì∩╕Å</div>
               <span>Tailors your resume with job keywords and requirements</span>
             </div>
             <div class="how-step">
-              <div class="how-step-icon">📄</div>
+              <div class="how-step-icon">≡ƒôä</div>
               <span>Generates an ATS-friendly PDF ready to submit</span>
             </div>
           </div>
@@ -187,7 +267,7 @@
     </div>
   </div>
 
-  <!-- ══ Panel 2: Loading ═══════════════════════════════════════════════ -->
+  <!-- ΓòÉΓòÉ Panel 2: Loading ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ -->
   <div id="panel-loading" class="panel">
     <div class="loading-panel">
       <div class="loading-orb">
@@ -195,7 +275,7 @@
         <div class="loading-orb-ring2"></div>
         <div class="loading-orb-core"></div>
       </div>
-      <h2>Finding Your Perfect Jobs…</h2>
+      <h2>Finding Your Perfect JobsΓÇª</h2>
       <p>Scanning thousands of recent postings across LinkedIn &amp; Indeed</p>
 
       <div class="loading-steps">
@@ -219,12 +299,12 @@
     </div>
   </div>
 
-  <!-- ══ Panel 3: Jobs ══════════════════════════════════════════════════ -->
+  <!-- ΓòÉΓòÉ Panel 3: Jobs ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ -->
   <div id="panel-jobs" class="panel">
     <div class="jobs-header">
       <div>
         <h2>Matching Jobs</h2>
-        <p style="color:var(--sub);font-size:.88rem;margin-top:.3rem">Click cards to select jobs — then tailor your resume for each</p>
+        <p style="color:var(--sub);font-size:.88rem;margin-top:.3rem">Click cards to select jobs ΓÇö then tailor your resume for each</p>
       </div>
       <span id="jobs-found-count" class="jobs-count">0 jobs found</span>
     </div>
@@ -234,15 +314,15 @@
     <div class="select-bar">
       <p><strong id="select-count">0</strong> job(s) selected</p>
       <div style="display:flex;gap:.75rem">
-        <button class="btn btn-secondary" onclick="restart()">← Start Over</button>
+        <button class="btn btn-secondary" onclick="restart()">ΓåÉ Start Over</button>
         <button id="tailor-btn" class="btn btn-primary" disabled onclick="tailorResumes()">
-          ✨ Tailor My Resume
+          Γ£¿ Tailor My Resume
         </button>
       </div>
     </div>
   </div>
 
-  <!-- ══ Panel 4: Tailoring ═════════════════════════════════════════════ -->
+  <!-- ΓòÉΓòÉ Panel 4: Tailoring ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ -->
   <div id="panel-tailoring" class="panel">
     <div class="loading-panel">
       <div class="loading-orb">
@@ -250,7 +330,7 @@
         <div class="loading-orb-ring2" style="border-bottom-color:var(--purple2)"></div>
         <div class="loading-orb-core" style="background:radial-gradient(circle,rgba(139,92,246,.3) 0%,transparent 70%)"></div>
       </div>
-      <h2>Tailoring Your Resume…</h2>
+      <h2>Tailoring Your ResumeΓÇª</h2>
       <p>AI is rewriting your resume to match each job's keywords and requirements</p>
 
       <div class="loading-steps">
@@ -270,14 +350,14 @@
     </div>
   </div>
 
-  <!-- ══ Panel 5: Review ════════════════════════════════════════════════ -->
+  <!-- ΓòÉΓòÉ Panel 5: Review ΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉ -->
   <div id="panel-review" class="panel">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;flex-wrap:wrap;gap:1rem">
       <div>
         <h2 style="font-size:1.6rem;font-weight:900;letter-spacing:-.03em">Your Tailored Resumes</h2>
         <p style="color:var(--sub);font-size:.88rem;margin-top:.3rem">Review changes, download your PDF, and apply!</p>
       </div>
-      <button id="restart-btn" class="btn btn-secondary">← Start Over</button>
+      <button id="restart-btn" class="btn btn-secondary">ΓåÉ Start Over</button>
     </div>
 
     <div id="review-tabs" class="tabs"></div>
@@ -286,11 +366,11 @@
 
 </main>
 
-<!-- ── Toast ───────────────────────────────────────────────────────────── -->
+<!-- ΓöÇΓöÇ Toast ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ -->
 <div id="toast" class="toast"></div>
 
 <footer>
-  ResumeBuilder · Powered by <span>Claude AI</span> · Jobs from LinkedIn &amp; Indeed
+  ResumeBuilder ┬╖ Powered by <span>Claude AI</span> ┬╖ Jobs from LinkedIn &amp; Indeed
 </footer>
 
 <script src="/static/app.js"></script>

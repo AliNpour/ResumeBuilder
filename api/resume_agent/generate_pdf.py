@@ -15,7 +15,7 @@ JSON schema expected:
     {
       "title": "Job Title",
       "company": "Company Name",
-      "dates": "Jan 2020 – Present",
+      "dates": "Jan 2020 ΓÇô Present",
       "bullets": ["Did X", "Achieved Y by Z%", ...]
     }
   ],
@@ -23,7 +23,7 @@ JSON schema expected:
     {
       "degree": "B.S. Computer Science",
       "school": "University Name",
-      "dates": "2014 – 2018",
+      "dates": "2014 ΓÇô 2018",
       "details": "GPA 3.8, Dean's List"  // optional
     }
   ],
@@ -48,17 +48,17 @@ def sanitize(text: str) -> str:
     if not text:
         return text
     replacements = {
-        '–': '-',   # en dash
-        '—': '-',   # em dash
-        '‘': "'",   # left single quote
-        '’': "'",   # right single quote / apostrophe
-        '“': '"',   # left double quote
-        '”': '"',   # right double quote
-        '•': '*',   # bullet
-        'â': '-',  # mangled en dash
-        'â': '-',  # mangled em dash
-        ' ': ' ',   # non-breaking space
-        '…': '...',  # ellipsis
+        'ΓÇô': '-',   # en dash
+        'ΓÇö': '-',   # em dash
+        'ΓÇÿ': "'",   # left single quote
+        'ΓÇÖ': "'",   # right single quote / apostrophe
+        'ΓÇ£': '"',   # left double quote
+        'ΓÇ¥': '"',   # right double quote
+        'ΓÇó': '*',   # bullet
+        '├ó┬Ç┬ô': '-',  # mangled en dash
+        '├ó┬Ç┬ö': '-',  # mangled em dash
+        '┬á': ' ',   # non-breaking space
+        'ΓÇª': '...',  # ellipsis
     }
     for char, replacement in replacements.items():
         text = text.replace(char, replacement)
