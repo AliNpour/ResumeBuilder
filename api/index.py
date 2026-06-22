@@ -179,8 +179,9 @@ def search_jobs_api():
     if rapidapi_key:
         try:
             jobs_raw = jsearch_jobs(search_term, location, num=5)
-            print(f"[JSearch] got {len(jobs_raw)} usable jobs", flush=True)
-            if len(jobs_raw) >= 3:
+            real_jobs = jobs_raw[:]
+            print(f"[JSearch] got {len(real_jobs)} usable jobs", flush=True)
+            if len(real_jobs) >= 3:
                 # Score & enrich with Claude
                 client = make_client()
                 skills_short = ", ".join((profile.get("top_skills") or [])[:5])
@@ -208,45 +209,28 @@ Jobs: {json.dumps(for_scoring)}""", max_tokens=1500)
                         return jsonify({"jobs": results[:5]})
 
                 # Scoring failed ΓÇö return raw JSearch results with default score
-                for i, j in enumerate(jobs_raw):
+                for j in real_jobs:
                     j.update({"score": 8, "work_type": j.get("work_type","In-Office"),
-                               "role_summary": j.get("description","")[:100],
+                               "role_summary": j.get("description","")[:80],
                                "key_qualifications": []})
-                return jsonify({"jobs": jobs_raw[:5]})
+                return jsonify({"jobs": real_jobs[:5]})
         except Exception as jsearch_err:
             print(f"[JSearch error] {type(jsearch_err).__name__}: {jsearch_err}", flush=True)
-            # Fall through to Claude fallback
+            real_jobs = []
     else:
         print("[JSearch] RAPIDAPI_KEY not set ΓÇö using Claude fallback", flush=True)
+        real_jobs = []
 
-    # ΓöÇΓöÇ Fallback: Claude-generated jobs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
-    print("[JSearch] falling back to Claude job generation", flush=True)
+    # ΓöÇΓöÇ Claude jobs (full fallback, or top-up if JSearch returned < 3) ΓöÇΓöÇΓöÇΓöÇ
+    need = 5 - len(real_jobs)
+    print(f"[Claude] generating {need} jobs to supplement {len(real_jobs)} real ones", flush=True)
     try:
         client = make_client()
         skills_short = ", ".join((profile.get("top_skills") or [])[:5])
-        jobs = claude_json(client, f"""Output ONLY a JSON array ΓÇö no prose, no markdown fences, nothing else.
-The array must contain EXACTLY 5 objects. Start your response with [ and end with ].
-
-Each object must have exactly these keys:
-{{"title":"","company":"","location":"","job_url":"","description":"","salary_raw":"","is_remote":false,"site":"linkedin","score":8,"work_type":"","salary_display":"","role_summary":"","key_qualifications":["","",""]}}
-
-Rules:
-- title: realistic job title matching "{search_term}"
-- company: real company name that hires for this role in {location}
-- location: "{location}" or "Remote"
-- job_url: leave empty string ""
-- description: 1 sentence, max 20 words
-- salary_raw: e.g. "USD 90,000 - 120,000"
-- salary_display: e.g. "USD 90k-120k"
-- is_remote: true or false
-- site: "linkedin"
-- score: integer 7-10
-- work_type: "Remote", "Hybrid", or "In-Office"
-- role_summary: 1 sentence max 12 words
-- key_qualifications: exactly 3 short strings
-
-Candidate profile: {profile.get("current_title","Engineer")}, skills: {skills_short}
-Generate all 5 now:""", max_tokens=2500)
+        jobs = claude_json(client, f"""Output ONLY a JSON array of EXACTLY {need} objects. No prose, no markdown. Start with [ end with ].
+Each object: {{"title":"","company":"","location":"","job_url":"","description":"1 sentence","salary_raw":"USD 80,000 - 110,000","is_remote":false,"site":"linkedin","score":8,"work_type":"Hybrid","salary_display":"USD 80k-110k","role_summary":"1 sentence","key_qualifications":["skill1","skill2","skill3"]}}
+Role: {search_term} in {location}. Candidate: {profile.get("current_title","Engineer")}, skills: {skills_short}.
+Use real company names. job_url must be empty string. Generate {need} now:""", max_tokens=1500)
     except Exception as e:
         return jsonify({"error": f"Job search failed: {str(e)}"}), 500
 
@@ -256,11 +240,15 @@ Generate all 5 now:""", max_tokens=2500)
                 jobs = jobs[key]
                 break
 
-    if not isinstance(jobs, list) or not jobs:
+    if not isinstance(jobs, list):
+        jobs = []
+
+    combined = real_jobs + jobs
+    if not combined:
         return jsonify({"error": "No jobs found. Try a different location or position."}), 404
 
-    print(f"[Claude fallback] returning {len(jobs)} jobs", flush=True)
-    return jsonify({"jobs": jobs[:5]})
+    print(f"[Search] returning {len(combined[:5])} jobs ({len(real_jobs)} real + {len(jobs)} generated)", flush=True)
+    return jsonify({"jobs": combined[:5]})
 
 
 @app.route("/api/tailor-resume", methods=["POST"])
@@ -296,10 +284,10 @@ STRICT RULES ΓÇö violations are not allowed:
 9. Keep all bullets concise (max 15 words each). Include ALL sections fully.
 
 Resume:
-{resume_text[:2500]}
+{resume_text[:2000]}
 
 Job: {job.get("title","")} at {job.get("company","")}
-{job.get("description","")[:1000]}""", max_tokens=2500)
+{job.get("description","")[:800]}""", max_tokens=2000)
 
             tailored.update({
                 "job_title":      job.get("title", ""),

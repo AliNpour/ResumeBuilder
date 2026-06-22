@@ -1015,6 +1015,11 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
   overflow: hidden;
   text-overflow: ellipsis;
   letter-spacing: -.01em;
+  cursor: default;
+}
+.job-title:hover {
+  white-space: normal;
+  overflow: visible;
 }
 .job-company { font-size: .82rem; color: var(--sub); }
 
@@ -1107,6 +1112,16 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
   background: rgba(59,130,246,.22);
   border-color: rgba(59,130,246,.5);
   transform: translateY(-1px);
+}
+.job-link-btn-secondary {
+  background: rgba(99,102,241,.1);
+  color: var(--sub2);
+  border-color: rgba(99,102,241,.2);
+}
+.job-link-btn-secondary:hover {
+  background: rgba(99,102,241,.2);
+  border-color: rgba(99,102,241,.4);
+  color: var(--blue3);
 }
 
 /* ΓöÇΓöÇ Select bar ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */

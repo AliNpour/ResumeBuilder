@@ -181,16 +181,19 @@ function renderJobs() {
     const source  = (job.site || 'job board').replace('linkedin', 'LinkedIn').replace('indeed', 'Indeed');
 
     const card = document.createElement('div');
-    const siteName = (job.site || 'linkedin').toLowerCase();
+    const siteName  = (job.site || 'linkedin').toLowerCase();
     const searchQ   = encodeURIComponent((job.title + ' ' + job.company).trim());
     const searchLoc = encodeURIComponent((job.location || state._location || '').trim());
     const hasRealUrl = job.job_url && job.job_url.startsWith('http');
-    const postingUrl = hasRealUrl
-      ? job.job_url
+    const isIndeed   = siteName.includes('indeed');
+
+    const fallbackUrl = isIndeed
+      ? 'https://ca.indeed.com/jobs?q=' + searchQ + '&l=' + searchLoc
       : 'https://www.linkedin.com/jobs/search/?keywords=' + searchQ + '&location=' + searchLoc;
-    const platformLabel = hasRealUrl
-      ? (siteName.includes('indeed') ? 'Apply on Indeed' : 'Apply on LinkedIn')
-      : 'Search on LinkedIn';
+    const postingUrl  = hasRealUrl ? job.job_url : fallbackUrl;
+    const btnLabel    = hasRealUrl
+      ? (isIndeed ? 'Apply on Indeed' : 'Apply on LinkedIn')
+      : (isIndeed ? 'Search on Indeed' : 'Search on LinkedIn');
 
     card.className = 'job-card';
     card.dataset.idx = idx;
@@ -198,7 +201,7 @@ function renderJobs() {
       <div class="job-header">
         <div class="job-logo">${initial}</div>
         <div class="job-title-block">
-          <div class="job-title">${esc(job.title)}</div>
+          <div class="job-title" title="${esc(job.title)}">${esc(job.title)}</div>
           <div class="job-company">${esc(job.company)}</div>
         </div>
         <div class="job-score">${job.score}/10</div>
@@ -214,7 +217,7 @@ function renderJobs() {
         ${(job.key_qualifications || []).map(q => `<li>${esc(q)}</li>`).join('')}
       </ul>
       <div class="job-links">
-        <a href="${postingUrl}" target="_blank" class="job-link-btn">${platformLabel} &rarr;</a>
+        <a href="${postingUrl}" target="_blank" class="job-link-btn">${btnLabel} &rarr;</a>
       </div>
     `;
 
