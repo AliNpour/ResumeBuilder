@@ -115,12 +115,19 @@ def jsearch_jobs(query, location, num=5):
     """Fetch real job listings from JSearch (RapidAPI) ΓÇö returns LinkedIn & Indeed URLs."""
     import urllib.request
     import urllib.parse
+    import re
     rapidapi_key = os.environ.get("RAPIDAPI_KEY", "")
     if not rapidapi_key:
         raise RuntimeError("RAPIDAPI_KEY not set")
 
-    q = urllib.parse.quote(f"{query} {location}".strip())
+    # Strip special chars that confuse JSearch (slashes, parentheses, etc.)
+    clean_query = re.sub(r'[/\\|()]', ' ', query)
+    clean_query = re.sub(r'\s+', ' ', clean_query).strip()
+    # Use only city name for broader location match
+    clean_location = location.split(',')[0].strip()
+    q = urllib.parse.quote(f"{clean_query} {clean_location}")
     url = f"https://jsearch.p.rapidapi.com/search?query={q}&num_pages=1&results_per_page={num}"
+    print(f"[JSearch] query string: {clean_query!r} in {clean_location!r}", flush=True)
     req = urllib.request.Request(url, headers={
         "X-RapidAPI-Key":  rapidapi_key,
         "X-RapidAPI-Host": "jsearch.p.rapidapi.com",
@@ -173,7 +180,7 @@ def search_jobs_api():
         try:
             jobs_raw = jsearch_jobs(search_term, location, num=5)
             print(f"[JSearch] got {len(jobs_raw)} usable jobs", flush=True)
-            if jobs_raw:
+            if len(jobs_raw) >= 3:
                 # Score & enrich with Claude
                 client = make_client()
                 skills_short = ", ".join((profile.get("top_skills") or [])[:5])
@@ -213,18 +220,33 @@ Jobs: {json.dumps(for_scoring)}""", max_tokens=1500)
         print("[JSearch] RAPIDAPI_KEY not set ΓÇö using Claude fallback", flush=True)
 
     # ΓöÇΓöÇ Fallback: Claude-generated jobs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    print("[JSearch] falling back to Claude job generation", flush=True)
     try:
         client = make_client()
         skills_short = ", ".join((profile.get("top_skills") or [])[:5])
-        jobs = claude_json(client, f"""Return ONLY a valid JSON array of exactly 5 job postings. No explanation, no markdown, start with [ end with ].
+        jobs = claude_json(client, f"""Output ONLY a JSON array ΓÇö no prose, no markdown fences, nothing else.
+The array must contain EXACTLY 5 objects. Start your response with [ and end with ].
 
-Candidate: {profile.get("current_title","Engineer")}, skills: {skills_short}, {profile.get("years_experience","5")} yrs exp
-Role: {search_term} | Location: {location} | Salary: {salary or "open"}
+Each object must have exactly these keys:
+{{"title":"","company":"","location":"","job_url":"","description":"","salary_raw":"","is_remote":false,"site":"linkedin","score":8,"work_type":"","salary_display":"","role_summary":"","key_qualifications":["","",""]}}
 
-Each item must have these fields with SHORT values (keep description under 20 words, role_summary under 15 words):
-{{"title":"X","company":"X","location":"X","job_url":"","description":"X","salary_raw":"USD 90,000 - 120,000","is_remote":false,"site":"linkedin","score":8,"work_type":"Remote","salary_display":"USD 90k-120k","role_summary":"X","key_qualifications":["X","X","X"]}}
+Rules:
+- title: realistic job title matching "{search_term}"
+- company: real company name that hires for this role in {location}
+- location: "{location}" or "Remote"
+- job_url: leave empty string ""
+- description: 1 sentence, max 20 words
+- salary_raw: e.g. "USD 90,000 - 120,000"
+- salary_display: e.g. "USD 90k-120k"
+- is_remote: true or false
+- site: "linkedin"
+- score: integer 7-10
+- work_type: "Remote", "Hybrid", or "In-Office"
+- role_summary: 1 sentence max 12 words
+- key_qualifications: exactly 3 short strings
 
-Use real companies. Mix Remote/Hybrid/In-Office. Scores 6-10 desc.""", max_tokens=4000)
+Candidate profile: {profile.get("current_title","Engineer")}, skills: {skills_short}
+Generate all 5 now:""", max_tokens=2500)
     except Exception as e:
         return jsonify({"error": f"Job search failed: {str(e)}"}), 500
 
@@ -237,6 +259,7 @@ Use real companies. Mix Remote/Hybrid/In-Office. Scores 6-10 desc.""", max_token
     if not isinstance(jobs, list) or not jobs:
         return jsonify({"error": "No jobs found. Try a different location or position."}), 404
 
+    print(f"[Claude fallback] returning {len(jobs)} jobs", flush=True)
     return jsonify({"jobs": jobs[:5]})
 
 
