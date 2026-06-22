@@ -13,6 +13,18 @@ const state = {
 const $  = (s, ctx = document) => ctx.querySelector(s);
 const $$ = (s, ctx = document) => [...ctx.querySelectorAll(s)];
 
+async function safeJson(res, fallbackMsg) {
+  const text = await res.text();
+  let data;
+  try { data = JSON.parse(text); } catch {
+    throw new Error(res.status === 503 || res.status === 502
+      ? 'Server is starting up ΓÇö please try again in 10 seconds'
+      : fallbackMsg + ' (server error ' + res.status + ')');
+  }
+  if (!res.ok) throw new Error(data.error || fallbackMsg);
+  return data;
+}
+
 function showToast(msg, type = 'info') {
   const t = $('#toast');
   t.textContent = msg;
@@ -97,8 +109,7 @@ async function analyzeResume() {
   try {
     setLoadingStep(1);
     const res  = await fetch('/api/parse-resume', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Failed to parse resume');
+    const data = await safeJson(res, 'Failed to parse resume');
 
     state.resumeText = data.resume_text;
     state.profile    = data.profile;
@@ -128,8 +139,7 @@ async function searchJobs() {
         salary:      state._salary,
       }),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Job search failed');
+    const data = await safeJson(res, 'Job search failed');
 
     state.jobs = data.jobs;
     setLoadingStep(3);
@@ -236,8 +246,7 @@ async function tailorResumes() {
         selected_jobs: jobs,
       }),
     });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Tailoring failed');
+    const data = await safeJson(res, 'Tailoring failed');
 
     state.tailored = data.tailored_resumes;
     renderReview();

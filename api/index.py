@@ -108,39 +108,16 @@ def search_jobs_api():
 
     try:
         client = make_client()
-        jobs = claude_json(client, f"""You are a job search AI. Generate 10 realistic, relevant job postings for this candidate.
-Base postings on real companies actively hiring for these roles in this location.
-Return ONLY a valid JSON array of 10 job objects, no extra text.
+        # Keep prompt compact to stay within Render's 30s timeout
+        skills_short = ", ".join((profile.get("top_skills") or [])[:5])
+        jobs = claude_json(client, f"""Generate 8 realistic job postings for this candidate. Return ONLY a JSON array, no other text.
 
-Each object must have these exact fields:
-{{
-  "title": "Job Title",
-  "company": "Real Company Name",
-  "location": "City, State or Remote",
-  "job_url": "",
-  "description": "3-4 sentences describing the role, team, and tech stack",
-  "salary_raw": "USD 120,000 - 160,000 or Not listed",
-  "is_remote": true or false,
-  "site": "linkedin",
-  "score": <number 1-10 based on fit>,
-  "work_type": "Remote" or "Hybrid" or "In-Office",
-  "salary_display": "USD 120k - 160k or Not listed",
-  "role_summary": "2-3 sentences on day-to-day responsibilities",
-  "key_qualifications": ["req 1", "req 2", "req 3", "req 4"]
-}}
+Candidate: {profile.get("current_title","Engineer")}, skills: {skills_short}, exp: {profile.get("years_experience","5")} years
+Role: {search_term} | Location: {location} | Salary: {salary or "open"}
 
-Candidate profile: {json.dumps(profile)}
-Target role: {search_term}
-Location: {location}
-Expected salary: {salary or "not specified"}
+Each item: {{"title":"","company":"","location":"","job_url":"","description":"2 sentences max","salary_raw":"","is_remote":false,"site":"linkedin","score":8,"work_type":"Remote","salary_display":"","role_summary":"1 sentence","key_qualifications":["req1","req2","req3"]}}
 
-Rules:
-- Use real, well-known companies that actually hire for these roles
-- Vary work types (mix Remote, Hybrid, In-Office)
-- Make salaries realistic for the role and location
-- Score each job 6-10 based on how well it matches the candidate's skills and experience
-- Descriptions should mention specific technologies from the candidate's background
-- Sort results by score descending""", max_tokens=3500)
+Use real companies. Mix Remote/Hybrid/In-Office. Score 6-10. Sort by score desc.""", max_tokens=2000)
     except Exception as e:
         return jsonify({"error": f"Job search failed: {str(e)}"}), 500
 
