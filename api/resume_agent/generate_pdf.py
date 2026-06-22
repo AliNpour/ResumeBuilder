@@ -118,12 +118,11 @@ def build_pdf_bytes(data: dict) -> bytes:
         colWidths=[W],
     )
     hdr_table.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,-1), BG_HDR),
+        ('BACKGROUND',    (0,0), (-1,-1), BG_HDR),
         ('TOPPADDING',    (0,0), (-1,-1), 12),
         ('BOTTOMPADDING', (0,0), (-1,-1), 10),
         ('LEFTPADDING',   (0,0), (-1,-1), 8),
         ('RIGHTPADDING',  (0,0), (-1,-1), 8),
-        ('ROWBACKGROUNDS', (0,0), (-1,-1), [BG_HDR, BG_HDR]),
     ]))
     story.append(hdr_table)
     story.append(Spacer(1, 8))
@@ -190,7 +189,7 @@ def build_pdf_bytes(data: dict) -> bytes:
             for b in bullets:
                 txt = s(b)
                 if txt:
-                    block.append(Paragraph(f'ΓÇó  {txt}', ST_BULLET))
+                    block.append(Paragraph(f'-  {txt}', ST_BULLET))
             story.append(KeepTogether(block))
 
     # ΓöÇΓöÇ Education ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
@@ -232,7 +231,7 @@ def build_pdf_bytes(data: dict) -> bytes:
         for c in certs:
             txt = s(c)
             if txt:
-                story.append(Paragraph(f'ΓÇó  {txt}', ST_CERT))
+                story.append(Paragraph(f'-  {txt}', ST_CERT))
 
     doc.build(story)
     buf.seek(0)

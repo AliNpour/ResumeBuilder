@@ -239,18 +239,18 @@ def tailor_resume_api():
 
     for job in jobs:
         try:
-            tailored = claude_json(client, f"""Tailor this resume for the job. Return ONLY valid JSON, no markdown.
+            tailored = claude_json(client, f"""Tailor this resume for the job. Return ONLY valid JSON, no markdown. Include ALL sections fully ΓÇö do not truncate.
 
 Schema:
 {{"name":"","email":"","phone":"","location":"","linkedin":"","summary":"","skills":[],"experience":[{{"title":"","company":"","dates":"","bullets":[]}}],"education":[{{"degree":"","school":"","dates":"","details":""}}],"certifications":[],"changes_made":["change 1","change 2","change 3"]}}
 
-Rules: mirror job keywords, reorder skills by relevance, strengthen bullets, rewrite summary. NEVER invent facts.
+Rules: mirror job keywords, reorder skills by relevance, strengthen bullets, rewrite summary. NEVER invent facts. Keep bullets concise (max 15 words each).
 
 Resume:
 {resume_text[:2500]}
 
 Job: {job.get("title","")} at {job.get("company","")}
-{job.get("description","")[:1200]}""", max_tokens=2000)
+{job.get("description","")[:1000]}""", max_tokens=2500)
 
             tailored.update({
                 "job_title":      job.get("title", ""),
