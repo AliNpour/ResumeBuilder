@@ -1083,6 +1083,41 @@ textarea { resize: vertical; min-height: 180px; line-height: 1.7; }
 }
 .job-link:hover { color: var(--purple2); }
 
+.job-links {
+  display: flex;
+  gap: .5rem;
+  margin-top: .9rem;
+  flex-wrap: wrap;
+}
+
+.job-link-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: .35rem .85rem;
+  border-radius: 8px;
+  font-size: .75rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .2s;
+  background: rgba(59,130,246,.12);
+  color: var(--blue3);
+  border: 1px solid rgba(59,130,246,.25);
+}
+.job-link-btn:hover {
+  background: rgba(59,130,246,.22);
+  border-color: rgba(59,130,246,.5);
+  transform: translateY(-1px);
+}
+.job-link-btn-secondary {
+  background: rgba(139,92,246,.1);
+  color: var(--purple2);
+  border-color: rgba(139,92,246,.2);
+}
+.job-link-btn-secondary:hover {
+  background: rgba(139,92,246,.2);
+  border-color: rgba(139,92,246,.45);
+}
+
 /* ΓöÇΓöÇ Select bar ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 .select-bar {
   position: sticky;

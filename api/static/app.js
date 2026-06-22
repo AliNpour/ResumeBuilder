@@ -182,6 +182,14 @@ function renderJobs() {
     const source  = (job.site || 'job board').replace('linkedin', 'LinkedIn').replace('indeed', 'Indeed');
 
     const card = document.createElement('div');
+    const linkedinUrl = 'https://www.linkedin.com/jobs/search/?keywords=' +
+      encodeURIComponent(job.title + ' ' + job.company) +
+      '&location=' + encodeURIComponent(job.location || state._location);
+    const indeedUrl = 'https://www.indeed.com/jobs?q=' +
+      encodeURIComponent(job.title + ' ' + job.company) +
+      '&l=' + encodeURIComponent(job.location || state._location);
+    const postingUrl = job.job_url || linkedinUrl;
+
     card.className = 'job-card';
     card.dataset.idx = idx;
     card.innerHTML = `
@@ -203,7 +211,10 @@ function renderJobs() {
       <ul class="job-quals">
         ${(job.key_qualifications || []).map(q => `<li>${esc(q)}</li>`).join('')}
       </ul>
-      ${job.job_url ? `<a href="${esc(job.job_url)}" target="_blank" class="job-link">View posting &rarr;</a>` : ''}
+      <div class="job-links">
+        <a href="${postingUrl}" target="_blank" class="job-link-btn">Search on LinkedIn &rarr;</a>
+        <a href="${indeedUrl}" target="_blank" class="job-link-btn job-link-btn-secondary">Search on Indeed &rarr;</a>
+      </div>
     `;
 
     card.addEventListener('click', e => {
