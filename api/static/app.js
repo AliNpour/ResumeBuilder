@@ -269,19 +269,19 @@ async function tailorResumes() {
   }
 }
 
-async function downloadPDF(resumeData, company) {
+async function downloadFile(endpoint, resumeData, company, ext) {
   try {
-    const res = await fetch('/api/generate-pdf', {
+    const res = await fetch(endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ resume_data: resumeData, company }),
     });
-    if (!res.ok) { showToast('PDF generation failed', 'error'); return; }
+    if (!res.ok) { showToast(ext.toUpperCase() + ' generation failed', 'error'); return; }
     const blob = await res.blob();
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
     a.href = url;
-    a.download = `resume_${company.toLowerCase().replace(/\s+/g, '_')}.pdf`;
+    a.download = `resume_${company.toLowerCase().replace(/\s+/g, '_')}.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -289,6 +289,14 @@ async function downloadPDF(resumeData, company) {
   } catch (err) {
     showToast('Download failed: ' + err.message, 'error');
   }
+}
+
+function downloadPDF(resumeData, company) {
+  return downloadFile('/api/generate-pdf', resumeData, company, 'pdf');
+}
+
+function downloadDOCX(resumeData, company) {
+  return downloadFile('/api/generate-docx', resumeData, company, 'docx');
 }
 
 /* ΓöÇΓöÇ Step 5: Review ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
@@ -354,7 +362,10 @@ function renderReview() {
 
       <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
         <button class="btn btn-success" onclick="downloadPDF(state.tailored[${i}], '${esc(resume.job_company || 'resume')}')">
-          Download PDF Resume
+          Download PDF
+        </button>
+        <button class="btn btn-secondary" onclick="downloadDOCX(state.tailored[${i}], '${esc(resume.job_company || 'resume')}')">
+          Download Word
         </button>
         ${resume.job_url
           ? `<a href="${esc(resume.job_url)}" target="_blank" class="btn btn-secondary">View Job Posting &rarr;</a>`

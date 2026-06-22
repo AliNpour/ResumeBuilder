@@ -282,6 +282,26 @@ Description: {job.get("description","")[:2500]}""", max_tokens=3500)
     return jsonify({"tailored_resumes": results})
 
 
+@app.route("/api/generate-docx", methods=["POST"])
+def generate_docx_api():
+    data        = request.get_json()
+    resume_data = data.get("resume_data", {})
+    company     = data.get("company", "tailored").lower().replace(" ", "_")
+
+    try:
+        from generate_pdf import build_docx_bytes
+        docx_bytes = build_docx_bytes(resume_data)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+    return send_file(
+        io.BytesIO(docx_bytes),
+        mimetype="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        as_attachment=True,
+        download_name=f"resume_{company}.docx",
+    )
+
+
 @app.route("/api/generate-pdf", methods=["POST"])
 def generate_pdf_api():
     data        = request.get_json()
