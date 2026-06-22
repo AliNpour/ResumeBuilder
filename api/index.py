@@ -144,6 +144,13 @@ Rules:
     except Exception as e:
         return jsonify({"error": f"Job search failed: {str(e)}"}), 500
 
+    # Claude sometimes wraps the array: {"jobs": [...]} or {"results": [...]}
+    if isinstance(jobs, dict):
+        for key in ("jobs", "results", "job_listings", "postings"):
+            if isinstance(jobs.get(key), list):
+                jobs = jobs[key]
+                break
+
     if not isinstance(jobs, list) or not jobs:
         return jsonify({"error": "No jobs found. Try a different location or position."}), 404
 
@@ -157,7 +164,11 @@ def tailor_resume_api():
     profile     = data.get("profile", {})
     jobs        = data.get("selected_jobs", [])
 
-    client  = make_client()
+    try:
+        client = make_client()
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
     results = []
 
     for job in jobs:

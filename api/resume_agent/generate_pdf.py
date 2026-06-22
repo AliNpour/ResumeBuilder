@@ -82,10 +82,12 @@ FONT_NAME = 18
 
 
 def build_styles():
-    s = getSampleStyleSheet()
+    styles = getSampleStyleSheet()
 
     def add(name, **kw):
-        s.add(ParagraphStyle(name=name, **kw))
+        if name not in styles:
+            styles.add(ParagraphStyle(name=name, **kw))
+        return styles[name]
 
     add("ResumeName",    fontName=BOLD_FONT, fontSize=FONT_NAME,
         textColor=ACCENT, alignment=TA_CENTER, spaceAfter=2)
@@ -109,7 +111,7 @@ def build_styles():
         textColor=colors.HexColor("#555555"), spaceAfter=2)
     add("CertText",      fontName=BODY_FONT, fontSize=FONT_BODY,
         leading=14, spaceAfter=2)
-    return s
+    return styles
 
 
 def divider():
