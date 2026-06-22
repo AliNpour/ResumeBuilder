@@ -18,7 +18,7 @@ async function safeJson(res, fallbackMsg) {
   let data;
   try { data = JSON.parse(text); } catch {
     throw new Error(res.status === 503 || res.status === 502
-      ? 'Server is starting up ΓÇö please try again in 10 seconds'
+      ? 'Server is starting up - please try again in 10 seconds'
       : fallbackMsg + ' (server error ' + res.status + ')');
   }
   if (!res.ok) throw new Error(data.error || fallbackMsg);
@@ -156,10 +156,10 @@ async function searchJobs() {
 
 /* ΓöÇΓöÇ Loading steps ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 const LOADING_STEPS = [
-  'Reading your resumeΓÇª',
-  'Extracting your profile with AIΓÇª',
-  'Searching LinkedIn & IndeedΓÇª',
-  'Scoring job relevanceΓÇª',
+  'Reading your resume...',
+  'Extracting your profile with AI...',
+  'Searching LinkedIn & Indeed...',
+  'Scoring job relevance...',
 ];
 
 function setLoadingStep(i) {
@@ -194,16 +194,16 @@ function renderJobs() {
         <div class="job-score">${job.score}/10</div>
       </div>
       <div class="job-tags">
-        <span class="tag tag-location">≡ƒôì ${esc(job.location || state._location)}</span>
-        <span class="tag tag-worktype">≡ƒÅó ${esc(job.work_type || 'In-Office')}</span>
-        <span class="tag tag-salary">≡ƒÆ░ ${esc(job.salary_display || job.salary_raw || 'Not listed')}</span>
+        <span class="tag tag-location">${esc(job.location || state._location)}</span>
+        <span class="tag tag-worktype">${esc(job.work_type || 'In-Office')}</span>
+        <span class="tag tag-salary">${esc(job.salary_display || job.salary_raw || 'Not listed')}</span>
         <span class="tag tag-source">${esc(source)}</span>
       </div>
       <p class="job-summary">${esc(job.role_summary || job.description?.substring(0, 180) || '')}</p>
       <ul class="job-quals">
         ${(job.key_qualifications || []).map(q => `<li>${esc(q)}</li>`).join('')}
       </ul>
-      ${job.job_url ? `<a href="${esc(job.job_url)}" target="_blank" class="job-link">View posting Γåù</a>` : ''}
+      ${job.job_url ? `<a href="${esc(job.job_url)}" target="_blank" class="job-link">View posting &rarr;</a>` : ''}
     `;
 
     card.addEventListener('click', e => {
@@ -319,20 +319,20 @@ function renderReview() {
 
     pane.innerHTML = `
       <div class="changes-list mb-2">
-        <h3>Γ£¿ Changes Made</h3>
+        <h3>Changes Made</h3>
         <ul style="list-style:none;padding:0">${changes || '<li>Resume tailored for this role</li>'}</ul>
       </div>
 
       <div class="resume-review">
         <div class="resume-pane">
-          <div class="pane-header original">≡ƒôä Original Resume</div>
-          <div class="pane-body" style="white-space:pre-wrap;font-size:.8rem">${esc(state.resumeText.substring(0, 2000))}${state.resumeText.length > 2000 ? '\nΓÇª' : ''}</div>
+          <div class="pane-header original">Original Resume</div>
+          <div class="pane-body" style="white-space:pre-wrap;font-size:.8rem">${esc(state.resumeText.substring(0, 2000))}${state.resumeText.length > 2000 ? '\n...' : ''}</div>
         </div>
         <div class="resume-pane">
-          <div class="pane-header tailored">Γ£¿ Tailored for ${esc(resume.job_title || 'this role')}</div>
+          <div class="pane-header tailored">Tailored for ${esc(resume.job_title || 'this role')}</div>
           <div class="pane-body">
             <div style="font-size:1.1rem;font-weight:700;margin-bottom:.25rem">${esc(resume.name)}</div>
-            <div style="color:var(--sub2);font-size:.8rem;margin-bottom:.75rem">${esc(resume.email)} ┬╖ ${esc(resume.phone)}</div>
+            <div style="color:var(--sub2);font-size:.8rem;margin-bottom:.75rem">${esc(resume.email)} | ${esc(resume.phone)}</div>
             <div style="margin-bottom:.75rem"><strong style="color:var(--blue);font-size:.8rem">SUMMARY</strong><br>${esc(resume.summary)}</div>
             <div style="margin-bottom:.75rem"><strong style="color:var(--blue);font-size:.8rem">SKILLS</strong><br><span style="font-size:.82rem">${esc(skills)}</span></div>
             <div><strong style="color:var(--blue);font-size:.8rem">EXPERIENCE</strong><br>${expHtml}</div>
@@ -342,10 +342,10 @@ function renderReview() {
 
       <div style="display:flex;gap:1rem;flex-wrap:wrap;align-items:center">
         <button class="btn btn-success" onclick="downloadPDF(state.tailored[${i}], '${esc(resume.job_company || 'resume')}')">
-          Γ¼ç Download PDF Resume
+          Download PDF Resume
         </button>
         ${resume.job_url
-          ? `<a href="${esc(resume.job_url)}" target="_blank" class="btn btn-secondary">≡ƒöù View Job Posting Γåù</a>`
+          ? `<a href="${esc(resume.job_url)}" target="_blank" class="btn btn-secondary">View Job Posting &rarr;</a>`
           : ''}
         <div style="margin-left:auto">
           <span class="tag tag-worktype">${esc(resume.work_type || '')}</span>
