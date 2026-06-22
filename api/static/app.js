@@ -36,7 +36,6 @@ function showPanel(id) {
   $$('.panel').forEach(p => p.classList.remove('active'));
   $(`#panel-${id}`).classList.add('active');
   updateSteps(id);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function setStep(n) {
