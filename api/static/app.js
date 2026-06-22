@@ -66,7 +66,7 @@ function initDropzone() {
     const allowed = ['.pdf', '.docx', '.doc', '.txt'];
     const ext = '.' + file.name.split('.').pop().toLowerCase();
     if (!allowed.includes(ext)) { showToast('Please upload a PDF, DOCX, or TXT file', 'error'); return; }
-    name.textContent = '≡ƒôÄ ' + file.name;
+    name.textContent = file.name;
     $('#resume-textarea').value = '';
     state._file = file;
   }
