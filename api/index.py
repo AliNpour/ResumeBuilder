@@ -114,16 +114,15 @@ Resume:
 def jsearch_jobs(query, location, num=5):
     """Fetch real job listings from JSearch (RapidAPI) ΓÇö returns LinkedIn & Indeed URLs."""
     import urllib.request
+    import urllib.parse
     rapidapi_key = os.environ.get("RAPIDAPI_KEY", "")
     if not rapidapi_key:
         raise RuntimeError("RAPIDAPI_KEY not set")
 
+    q = urllib.parse.quote(f"{query} {location}".strip())
     url = (
-        "https://jsearch.p.rapidapi.com/search"
-        f"?query={urllib.parse.quote(query + ' ' + location)}"
-        "&num_pages=1"
-        "&date_posted=week"
-        "&results_per_page=" + str(num)
+        f"https://jsearch.p.rapidapi.com/search"
+        f"?query={q}&num_pages=1&date_posted=month&results_per_page={num}"
     )
     req = urllib.request.Request(url, headers={
         "X-RapidAPI-Key":  rapidapi_key,
@@ -192,8 +191,9 @@ Jobs: {json.dumps(for_scoring)}""", max_tokens=1500)
                             results.append({**jobs_raw[idx], **s})
                     results.sort(key=lambda x: x.get("score", 0), reverse=True)
                     return jsonify({"jobs": results[:5]})
-        except Exception:
-            pass  # Fall through to Claude fallback
+        except Exception as jsearch_err:
+            print(f"[JSearch error] {jsearch_err}", flush=True)
+            # Fall through to Claude fallback
 
     # ΓöÇΓöÇ Fallback: Claude-generated jobs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     try:
@@ -239,34 +239,18 @@ def tailor_resume_api():
 
     for job in jobs:
         try:
-            tailored = claude_json(client, f"""You are an expert resume writer. Tailor this resume for the job below.
-Return ONLY valid JSON ΓÇö no markdown, no explanation outside JSON.
+            tailored = claude_json(client, f"""Tailor this resume for the job. Return ONLY valid JSON, no markdown.
 
-RULES:
-- Mirror the job's keywords and phrases naturally
-- Reorder skills so most relevant appear first
-- Strengthen bullet points with quantified outcomes where the original is vague
-- Rewrite the summary to address this specific role
-- NEVER invent experience, companies, dates, degrees, or skills
+Schema:
+{{"name":"","email":"","phone":"","location":"","linkedin":"","summary":"","skills":[],"experience":[{{"title":"","company":"","dates":"","bullets":[]}}],"education":[{{"degree":"","school":"","dates":"","details":""}}],"certifications":[],"changes_made":["change 1","change 2","change 3"]}}
 
-JSON schema:
-{{
-  "name": "", "email": "", "phone": "", "location": "", "linkedin": "",
-  "summary": "",
-  "skills": [],
-  "experience": [{{"title":"","company":"","dates":"","bullets":[]}}],
-  "education": [{{"degree":"","school":"","dates":"","details":""}}],
-  "certifications": [],
-  "changes_made": ["change 1","change 2","change 3","change 4"]
-}}
+Rules: mirror job keywords, reorder skills by relevance, strengthen bullets, rewrite summary. NEVER invent facts.
 
-Original resume:
-{resume_text[:4000]}
+Resume:
+{resume_text[:2500]}
 
-Job:
-Title: {job.get("title","")}
-Company: {job.get("company","")}
-Description: {job.get("description","")[:2500]}""", max_tokens=3500)
+Job: {job.get("title","")} at {job.get("company","")}
+{job.get("description","")[:1200]}""", max_tokens=2000)
 
             tailored.update({
                 "job_title":      job.get("title", ""),
