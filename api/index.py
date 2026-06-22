@@ -128,6 +128,12 @@ def jsearch_jobs(query, location, num=5):
     with urllib.request.urlopen(req, timeout=20) as resp:
         raw = json.loads(resp.read())
 
+    status = raw.get("status", "")
+    data_count = len(raw.get("data", []))
+    print(f"[JSearch] status={status} data_count={data_count} query={query!r} location={location!r}", flush=True)
+    if status not in ("OK", ""):
+        raise RuntimeError(f"JSearch API error: {raw.get('message', status)}")
+
     results = []
     for j in raw.get("data", [])[:num]:
         mn = j.get("job_min_salary")
@@ -166,6 +172,7 @@ def search_jobs_api():
     if rapidapi_key:
         try:
             jobs_raw = jsearch_jobs(search_term, location, num=5)
+            print(f"[JSearch] got {len(jobs_raw)} usable jobs", flush=True)
             if jobs_raw:
                 # Score & enrich with Claude
                 client = make_client()
@@ -175,22 +182,35 @@ def search_jobs_api():
                      "description": j["description"][:300], "is_remote": j["is_remote"]}
                     for i, j in enumerate(jobs_raw)
                 ]
-                scored = claude_json(client, f"""Score these jobs for the candidate. Return ONLY a JSON array.
+                try:
+                    scored = claude_json(client, f"""Score these jobs for the candidate. Return ONLY a JSON array.
 Each item: {{"index":<n>,"score":<6-10>,"work_type":"Remote|Hybrid|In-Office","role_summary":"1 sentence","key_qualifications":["X","X","X"]}}
 Candidate: {profile.get("current_title","Engineer")}, skills: {skills_short}
 Jobs: {json.dumps(for_scoring)}""", max_tokens=1500)
+                except Exception:
+                    scored = []
 
-                if isinstance(scored, list):
+                if isinstance(scored, list) and scored:
                     results = []
                     for s in scored:
                         idx = s.get("index", -1)
                         if 0 <= idx < len(jobs_raw):
                             results.append({**jobs_raw[idx], **s})
                     results.sort(key=lambda x: x.get("score", 0), reverse=True)
-                    return jsonify({"jobs": results[:5]})
+                    if results:
+                        return jsonify({"jobs": results[:5]})
+
+                # Scoring failed ΓÇö return raw JSearch results with default score
+                for i, j in enumerate(jobs_raw):
+                    j.update({"score": 8, "work_type": j.get("work_type","In-Office"),
+                               "role_summary": j.get("description","")[:100],
+                               "key_qualifications": []})
+                return jsonify({"jobs": jobs_raw[:5]})
         except Exception as jsearch_err:
-            print(f"[JSearch error] {jsearch_err}", flush=True)
+            print(f"[JSearch error] {type(jsearch_err).__name__}: {jsearch_err}", flush=True)
             # Fall through to Claude fallback
+    else:
+        print("[JSearch] RAPIDAPI_KEY not set ΓÇö using Claude fallback", flush=True)
 
     # ΓöÇΓöÇ Fallback: Claude-generated jobs ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     try:
@@ -241,7 +261,16 @@ def tailor_resume_api():
 Schema:
 {{"name":"","email":"","phone":"","location":"","linkedin":"","summary":"","skills":[],"experience":[{{"title":"","company":"","dates":"","bullets":[]}}],"education":[{{"degree":"","school":"","dates":"","details":""}}],"certifications":[],"changes_made":["change 1","change 2","change 3"]}}
 
-Rules: mirror job keywords, reorder skills by relevance, strengthen bullets, rewrite summary. NEVER invent facts. Keep bullets concise (max 15 words each).
+STRICT RULES ΓÇö violations are not allowed:
+1. COPY name, email, phone, location, linkedin EXACTLY as-is from the original resume ΓÇö do not alter a single character.
+2. COPY every education entry (degree, school, dates, details) EXACTLY as-is ΓÇö do not change, add, or remove any education.
+3. COPY certifications EXACTLY as-is ΓÇö do not add or remove any.
+4. NEVER invent, fabricate, or imply any skill, technology, company, date, title, or achievement not present in the original resume.
+5. DO NOT add languages, tools, or skills the candidate did not list.
+6. You MAY reorder skills so the most job-relevant ones appear first.
+7. You MAY reword bullet points using stronger action verbs or job-matching keywords ΓÇö but only based on what is already stated; do not add new facts.
+8. You MAY rewrite the summary to highlight the most relevant aspects of the candidate's REAL background for this role.
+9. Keep all bullets concise (max 15 words each). Include ALL sections fully.
 
 Resume:
 {resume_text[:2500]}
