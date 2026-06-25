@@ -148,25 +148,34 @@ def build_pdf_bytes(data: dict) -> bytes:
     skills = data.get('skills') or []
     if skills:
         story += section('Core Skills')
-        rows, row = [], []
-        for sk in skills:
-            row.append(s(sk))
-            if len(row) == 4:
-                rows.append(row); row = []
-        if row:
-            rows.append(row + [''] * (4 - len(row)))
-        if rows:
-            t = Table(rows, colWidths=[W/4]*4)
-            t.setStyle(TableStyle([
-                ('FONTNAME',      (0,0), (-1,-1), 'Helvetica'),
-                ('FONTSIZE',      (0,0), (-1,-1), 9),
-                ('TEXTCOLOR',     (0,0), (-1,-1), BLACK),
-                ('TOPPADDING',    (0,0), (-1,-1), 2),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 2),
-                ('LEFTPADDING',   (0,0), (-1,-1), 2),
-                ('VALIGN',        (0,0), (-1,-1), 'TOP'),
-            ]))
-            story.append(t)
+        ST_SKILL = st(fontName='Helvetica', fontSize=9, textColor=BLACK,
+                      leading=13, spaceAfter=1)
+        # Detect if skills are long category strings (contain ':') ΓåÆ 1-col list
+        # Otherwise lay out as a 2-column table so text wraps properly
+        long_form = any(':' in str(sk) and len(str(sk)) > 40 for sk in skills)
+        if long_form:
+            for sk in skills:
+                txt = s(sk)
+                if txt:
+                    story.append(Paragraph(f'-  {txt}', ST_SKILL))
+        else:
+            rows, row = [], []
+            for sk in skills:
+                row.append(Paragraph(s(sk), ST_SKILL))
+                if len(row) == 2:
+                    rows.append(row); row = []
+            if row:
+                rows.append(row + [Paragraph('', ST_SKILL)] * (2 - len(row)))
+            if rows:
+                t = Table(rows, colWidths=[W/2, W/2])
+                t.setStyle(TableStyle([
+                    ('TOPPADDING',    (0,0), (-1,-1), 1),
+                    ('BOTTOMPADDING', (0,0), (-1,-1), 1),
+                    ('LEFTPADDING',   (0,0), (-1,-1), 2),
+                    ('RIGHTPADDING',  (0,0), (-1,-1), 2),
+                    ('VALIGN',        (0,0), (-1,-1), 'TOP'),
+                ]))
+                story.append(t)
         story.append(Spacer(1, 4))
 
     # ΓöÇΓöÇ Experience ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
@@ -309,34 +318,43 @@ def build_docx_bytes(data: dict) -> bytes:
     skills = data.get('skills') or []
     if skills:
         section_head('Core Skills')
-        from docx.oxml.ns import nsmap
-        # Build a table: 4 columns
-        rows_data, row = [], []
-        for sk in skills:
-            row.append(s(sk))
-            if len(row) == 4:
-                rows_data.append(row); row = []
-        if row:
-            row += [''] * (4 - len(row))
-            rows_data.append(row)
-        tbl = doc.add_table(rows=len(rows_data), cols=4)
-        tbl.style = 'Table Grid'
-        for r_idx, row_data in enumerate(rows_data):
-            for c_idx, cell_text in enumerate(row_data):
-                cell = tbl.rows[r_idx].cells[c_idx]
-                cell.text = cell_text
-                for para in cell.paragraphs:
-                    for run in para.runs:
-                        run.font.size = Pt(9)
-                # remove borders
-                tc = cell._tc
-                tcPr = tc.get_or_add_tcPr()
-                tcBorders = OxmlElement('w:tcBorders')
-                for side in ('top', 'left', 'bottom', 'right', 'insideH', 'insideV'):
-                    el = OxmlElement(f'w:{side}')
-                    el.set(qn('w:val'), 'none')
-                    tcBorders.append(el)
-                tcPr.append(tcBorders)
+        long_form = any(':' in str(sk) and len(str(sk)) > 40 for sk in skills)
+        if long_form:
+            # Category-style long strings ΓÇö one per bullet line
+            for sk in skills:
+                txt = s(sk)
+                if txt:
+                    bp = doc.add_paragraph(style='List Bullet')
+                    bp.paragraph_format.space_after = Pt(1)
+                    br = bp.add_run(txt)
+                    set_font(br, 9)
+        else:
+            # Short individual skills ΓÇö 2-column table
+            rows_data, row = [], []
+            for sk in skills:
+                row.append(s(sk))
+                if len(row) == 2:
+                    rows_data.append(row); row = []
+            if row:
+                row += [''] * (2 - len(row))
+                rows_data.append(row)
+            tbl = doc.add_table(rows=len(rows_data), cols=2)
+            tbl.style = 'Table Grid'
+            for r_idx, row_data in enumerate(rows_data):
+                for c_idx, cell_text in enumerate(row_data):
+                    cell = tbl.rows[r_idx].cells[c_idx]
+                    cell.text = cell_text
+                    for para in cell.paragraphs:
+                        for run in para.runs:
+                            run.font.size = Pt(9)
+                    tc = cell._tc
+                    tcPr = tc.get_or_add_tcPr()
+                    tcBorders = OxmlElement('w:tcBorders')
+                    for side in ('top', 'left', 'bottom', 'right', 'insideH', 'insideV'):
+                        el = OxmlElement(f'w:{side}')
+                        el.set(qn('w:val'), 'none')
+                        tcBorders.append(el)
+                    tcPr.append(tcBorders)
 
     # ΓöÇΓöÇ Experience ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
     exp = data.get('experience') or []
