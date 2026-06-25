@@ -84,6 +84,8 @@ def build_pdf_bytes(data: dict) -> bytes:
                     textColor=GREY, spaceAfter=2, leading=12, alignment=TA_RIGHT)
     ST_CERT    = st(fontName='Helvetica', fontSize=9,
                     textColor=BLACK, leading=13, spaceAfter=1)
+    ST_LANG    = st(fontName='Helvetica', fontSize=9,
+                    textColor=BLACK, leading=13, spaceAfter=1)
 
     buf = io.BytesIO()
     doc = SimpleDocTemplate(
@@ -210,6 +212,15 @@ def build_pdf_bytes(data: dict) -> bytes:
             txt = s(c)
             if txt:
                 story.append(Paragraph(f'-  {txt}', ST_CERT))
+
+    # ΓöÇΓöÇ Languages ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    langs = data.get('languages') or []
+    if langs:
+        story += section('Languages')
+        for lang in langs:
+            txt = s(lang)
+            if txt:
+                story.append(Paragraph(f'-  {txt}', ST_LANG))
 
     doc.build(story)
     buf.seek(0)
@@ -402,6 +413,18 @@ def build_docx_bytes(data: dict) -> bytes:
                 cp.paragraph_format.space_after = Pt(1)
                 cr2 = cp.add_run(txt)
                 set_font(cr2, 9)
+
+    # ΓöÇΓöÇ Languages ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
+    langs = data.get('languages') or []
+    if langs:
+        section_head('Languages')
+        for lang in langs:
+            txt = s(lang)
+            if txt:
+                lp = doc.add_paragraph(style='List Bullet')
+                lp.paragraph_format.space_after = Pt(1)
+                lr = lp.add_run(txt)
+                set_font(lr, 9)
 
     buf = io.BytesIO()
     doc.save(buf)

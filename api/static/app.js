@@ -7,6 +7,7 @@ const state = {
   tailored:     [],
   pdfFiles:     [],
   currentTab:   0,
+  mode:         'search',   // 'search' | 'url'
 };
 
 /* ΓöÇΓöÇ Utilities ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
@@ -55,6 +56,18 @@ function updateSteps(panel) {
 }
 
 
+/* ΓöÇΓöÇ Mode toggle ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
+function setMode(m) {
+  state.mode = m;
+  $('#mode-search').classList.toggle('active', m === 'search');
+  $('#mode-url').classList.toggle('active', m === 'url');
+  $('#fields-search').style.display = m === 'search' ? '' : 'none';
+  $('#fields-url').style.display    = m === 'url'    ? '' : 'none';
+  $('#analyze-btn-label').innerHTML  = m === 'search'
+    ? 'Analyze &amp; Find Matching Jobs'
+    : 'Analyze &amp; Tailor for This Job';
+}
+
 /* ΓöÇΓöÇ File upload / drag-drop ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 function initDropzone() {
   const zone  = $('#dropzone');
@@ -85,25 +98,71 @@ function initDropzone() {
 
 /* ΓöÇΓöÇ Step 1: Upload & Analyze ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ */
 async function analyzeResume() {
+  const textarea = $('#resume-textarea').value.trim();
+  if (!textarea && !state._file) { showToast('Please upload or paste your resume', 'error'); return; }
+
+  if (state.mode === 'url') {
+    const jobUrl = $('#job-url-input').value.trim();
+    if (!jobUrl || !jobUrl.startsWith('http')) {
+      showToast('Please paste a valid job URL starting with http', 'error'); return;
+    }
+    showPanel('loading');
+    setLoadingStep(0);
+
+    const fd = new FormData();
+    if (state._file) fd.append('file', state._file);
+    else fd.append('resume_text', textarea);
+
+    try {
+      setLoadingStep(1);
+      const res  = await fetch('/api/parse-resume', { method: 'POST', body: fd });
+      const data = await safeJson(res, 'Failed to parse resume');
+      state.resumeText = data.resume_text;
+      state.profile    = data.profile;
+
+      setLoadingStep(2);
+      const jRes  = await fetch('/api/fetch-job', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: jobUrl }),
+      });
+      const jData = await safeJson(jRes, 'Failed to fetch job posting');
+
+      // Build a synthetic job object and go straight to tailor
+      const job = {
+        title:          jData.title   || 'Target Role',
+        company:        jData.company || 'Company',
+        description:    jData.description || '',
+        job_url:        jobUrl,
+        work_type:      '',
+        salary_display: '',
+        score:          10,
+      };
+      state.jobs         = [job];
+      state.selectedJobs = [0];
+
+      setLoadingStep(3);
+      await tailorResumes();
+    } catch (err) {
+      showPanel('upload');
+      showToast(err.message, 'error');
+    }
+    return;
+  }
+
+  // ΓöÇΓöÇ Find Jobs mode ΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇΓöÇ
   const location = $('#location').value.trim();
   const position = $('#position').value.trim();
   const salary   = $('#salary').value.trim();
 
   if (!location) { showToast('Please enter a job location', 'error'); return; }
 
-  const textarea = $('#resume-textarea').value.trim();
-  if (!textarea && !state._file) { showToast('Please upload or paste your resume', 'error'); return; }
-
-  // Show loading
   showPanel('loading');
   setLoadingStep(0);
 
   const fd = new FormData();
-  if (state._file) {
-    fd.append('file', state._file);
-  } else {
-    fd.append('resume_text', textarea);
-  }
+  if (state._file) fd.append('file', state._file);
+  else fd.append('resume_text', textarea);
 
   try {
     setLoadingStep(1);
@@ -393,9 +452,11 @@ function restart() {
   state.tailored   = [];
   state.pdfFiles   = [];
   state._file      = null;
-  $('#file-input').value   = '';
+  $('#file-input').value      = '';
   $('#file-name').textContent = '';
   $('#resume-textarea').value = '';
+  $('#job-url-input').value   = '';
+  setMode('search');
   showPanel('upload');
 }
 
